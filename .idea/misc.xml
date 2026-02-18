@@ -13,10 +13,6 @@
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$PROJECT_DIR$/infra/config-server/pom.xml" />
-        <option value="$PROJECT_DIR$/infra/eureka-server/pom.xml" />
-        <option value="$PROJECT_DIR$/infra/gateway-server/pom.xml" />
-        <option value="$PROJECT_DIR$/infra/pom.xml" />
         <option value="$PROJECT_DIR$/kitchen/pom.xml" />
       </set>
     </option>
