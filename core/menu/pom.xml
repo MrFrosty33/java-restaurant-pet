@@ -15,9 +15,17 @@
         <maven.compiler.source>24</maven.compiler.source>
         <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <common-module.version>1.0-SNAPSHOT</common-module.version>
     </properties>
 
     <dependencies>
+        <!-- my own modules -->
+        <dependency>
+            <groupId>at.frosty.restaurant</groupId>
+            <artifactId>common</artifactId>
+            <version>${common-module.version}</version>
+        </dependency>
         <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

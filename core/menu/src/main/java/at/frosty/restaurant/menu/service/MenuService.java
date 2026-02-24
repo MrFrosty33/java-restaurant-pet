@@ -1,0 +1,16 @@
+package at.frosty.restaurant.menu.service;
+
+import at.frosty.restaurant.common.model.menu.Category;
+import at.frosty.restaurant.common.model.menu.dto.DishDto;
+import at.frosty.restaurant.menu.enums.DishSearchType;
+import at.frosty.restaurant.menu.enums.DishSortType;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface MenuService {
+    DishDto getByUuid(UUID uuid);
+    List<DishDto> getAllSorted(DishSortType sortBy);
+    List<DishDto> getByCategory(Category category, DishSortType sortBy);
+    List<DishDto> search(String query, DishSearchType type);
+}
