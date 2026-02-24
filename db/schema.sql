@@ -7,10 +7,18 @@ CREATE TABLE IF NOT EXISTS dishes (
     name VARCHAR(150),
     price NUMERIC(5, 2),
     category VARCHAR(100),
-    --todo categories
-    --CONSTRAINT check_category CHECK (category IN ('')),
-    CONSTRAINT check_price CHECK (price > 0)
-);
+    CONSTRAINT check_category CHECK (category IN (
+            'STARTER',
+            'SOUP',
+            'SALAD',
+            'MAIN',
+            'SIDE_DISH',
+            'DESSERT',
+            'DRINK',
+            'SNACK'
+        )),
+        CONSTRAINT check_price CHECK (price > 0)
+    );
 
 CREATE TABLE IF NOT EXISTS dish_allergens (
     dish_id UUID REFERENCES dishes(id),
