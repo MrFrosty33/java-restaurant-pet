@@ -4,8 +4,8 @@ CREATE DATABASE menu_dishes;
 
 CREATE TABLE IF NOT EXISTS dishes (
     id UUID PRIMARY KEY,
-    name VARCHAR(150),
-    price NUMERIC(5, 2),
+    name VARCHAR(150) NOT NULL,
+    price NUMERIC(5, 2) NOT NULL,
     category VARCHAR(100),
     CONSTRAINT check_category CHECK (category IN (
             'STARTER',
@@ -25,3 +25,17 @@ CREATE TABLE IF NOT EXISTS dish_allergens (
     allergen CHAR NOT NULL,
     PRIMARY KEY (dish_id, allergen)
 );
+
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY,
+    username VARCHAR(150) NOT NULL,
+    password VARCHAR(150) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_roles (
+    user_id UUID REFERENCES users(id),
+    role VARCHAR(100),
+    CONSTRAINT check_role CHECK (role IN (
+    'ADMIN'
+    ))
+)
