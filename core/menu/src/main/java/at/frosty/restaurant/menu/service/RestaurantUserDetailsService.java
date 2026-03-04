@@ -31,7 +31,7 @@ public class RestaurantUserDetailsService implements UserDetailsService {
                 .username(restaurantUser.getUsername())
                 .password(restaurantUser.getPassword())
                 .authorities(restaurantUser.getRoles().stream()
-                        .map(role -> new SimpleGrantedAuthority(role.name()))
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                         .toList())
                 .build();
 
