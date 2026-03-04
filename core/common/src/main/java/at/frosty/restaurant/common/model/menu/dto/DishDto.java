@@ -30,9 +30,10 @@ public class DishDto {
     @NotNull
     private Category category;
 
+    private boolean active;
+
     @NotNull
     @NotEmpty
     @Size(max = 14)
     private Set<Allergen> allergens;
-
 }

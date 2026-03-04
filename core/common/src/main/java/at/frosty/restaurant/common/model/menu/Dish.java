@@ -33,6 +33,8 @@ public class Dish {
     @Column
     @Enumerated(EnumType.STRING)
     private Category category;
+    @Column
+    private boolean active;
 
     @ElementCollection(targetClass = Allergen.class)
     @CollectionTable(name = "dish_allergens", joinColumns = @JoinColumn(name = "dish_id"))

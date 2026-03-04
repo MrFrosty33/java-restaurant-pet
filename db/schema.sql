@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS dishes (
     name VARCHAR(150) NOT NULL,
     price NUMERIC(5, 2) NOT NULL,
     category VARCHAR(100),
+    active BOOLEAN,
     CONSTRAINT check_category CHECK (category IN (
             'STARTER',
             'SOUP',
