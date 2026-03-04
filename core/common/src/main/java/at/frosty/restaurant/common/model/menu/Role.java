@@ -1,7 +1,7 @@
 package at.frosty.restaurant.common.model.menu;
 
 public enum Role {
-    ADMIN;
+    MANAGER;
 
     // when update don't forget about DB constraint
 }

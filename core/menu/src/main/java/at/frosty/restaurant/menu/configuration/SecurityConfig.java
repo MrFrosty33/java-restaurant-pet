@@ -23,7 +23,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/menu/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/management/menu/**").hasRole("MANAGER")
                         .requestMatchers("/menu/**").permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
