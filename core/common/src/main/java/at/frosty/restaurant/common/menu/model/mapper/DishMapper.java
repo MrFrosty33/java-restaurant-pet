@@ -1,7 +1,7 @@
-package at.frosty.restaurant.common.model.menu.mapper;
+package at.frosty.restaurant.common.menu.model.mapper;
 
-import at.frosty.restaurant.common.model.menu.Dish;
-import at.frosty.restaurant.common.model.menu.dto.DishDto;
+import at.frosty.restaurant.common.menu.model.Dish;
+import at.frosty.restaurant.common.menu.model.dto.DishDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

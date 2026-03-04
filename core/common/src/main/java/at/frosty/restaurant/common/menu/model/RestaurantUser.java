@@ -1,4 +1,4 @@
-package at.frosty.restaurant.common.model.menu;
+package at.frosty.restaurant.common.menu.model;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -13,32 +13,26 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "dishes")
-public class Dish {
+@Table(name = "users")
+public class RestaurantUser {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column
-    private String name;
+    private String username;
     @Column
-    private BigDecimal price;
-    @Column
-    @Enumerated(EnumType.STRING)
-    private Category category;
-    @Column
-    private boolean active;
+    private String password;
 
-    @ElementCollection(targetClass = Allergen.class)
-    @CollectionTable(name = "dish_allergens", joinColumns = @JoinColumn(name = "dish_id"))
-    @Column(name = "allergen", length = 1)
+    @ElementCollection(targetClass = Role.class)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Set<Allergen> allergens = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 }

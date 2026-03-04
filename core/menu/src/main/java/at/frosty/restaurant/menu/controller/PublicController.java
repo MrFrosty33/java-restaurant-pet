@@ -1,11 +1,10 @@
 package at.frosty.restaurant.menu.controller;
 
-import at.frosty.restaurant.common.model.menu.Category;
-import at.frosty.restaurant.common.model.menu.dto.DishDto;
+import at.frosty.restaurant.common.menu.model.Category;
+import at.frosty.restaurant.common.menu.model.dto.DishDto;
 import at.frosty.restaurant.menu.enums.DishSearchType;
 import at.frosty.restaurant.menu.enums.DishSortType;
 import at.frosty.restaurant.menu.service.MenuService;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

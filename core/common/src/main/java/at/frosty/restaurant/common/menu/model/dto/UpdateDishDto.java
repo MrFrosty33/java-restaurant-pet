@@ -1,8 +1,7 @@
-package at.frosty.restaurant.common.model.menu.dto;
+package at.frosty.restaurant.common.menu.model.dto;
 
-import at.frosty.restaurant.common.model.menu.Allergen;
-import at.frosty.restaurant.common.model.menu.Category;
-import jakarta.validation.constraints.NotEmpty;
+import at.frosty.restaurant.common.menu.model.Allergen;
+import at.frosty.restaurant.common.menu.model.Category;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;

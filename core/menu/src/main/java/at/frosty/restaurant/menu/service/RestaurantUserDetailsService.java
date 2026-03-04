@@ -1,6 +1,6 @@
 package at.frosty.restaurant.menu.service;
 
-import at.frosty.restaurant.common.model.menu.RestaurantUser;
+import at.frosty.restaurant.common.menu.model.RestaurantUser;
 import at.frosty.restaurant.menu.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

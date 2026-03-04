@@ -1,8 +1,8 @@
 package at.frosty.restaurant.menu.service;
 
-import at.frosty.restaurant.common.model.menu.Category;
-import at.frosty.restaurant.common.model.menu.dto.DishDto;
-import at.frosty.restaurant.common.model.menu.dto.UpdateDishDto;
+import at.frosty.restaurant.common.menu.model.Category;
+import at.frosty.restaurant.common.menu.model.dto.DishDto;
+import at.frosty.restaurant.common.menu.model.dto.UpdateDishDto;
 import at.frosty.restaurant.menu.enums.DishSearchType;
 import at.frosty.restaurant.menu.enums.DishSortType;
 

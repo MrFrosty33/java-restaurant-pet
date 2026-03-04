@@ -1,7 +1,7 @@
 package at.frosty.restaurant.menu.controller;
 
-import at.frosty.restaurant.common.model.menu.dto.DishDto;
-import at.frosty.restaurant.common.model.menu.dto.UpdateDishDto;
+import at.frosty.restaurant.common.menu.model.dto.DishDto;
+import at.frosty.restaurant.common.menu.model.dto.UpdateDishDto;
 import at.frosty.restaurant.menu.service.MenuService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

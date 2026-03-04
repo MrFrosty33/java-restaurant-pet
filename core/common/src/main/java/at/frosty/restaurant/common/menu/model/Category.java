@@ -1,4 +1,4 @@
-package at.frosty.restaurant.common.model.menu;
+package at.frosty.restaurant.common.menu.model;
 
 public enum Category {
     STARTER,
