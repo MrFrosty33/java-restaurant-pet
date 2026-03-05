@@ -1,7 +1,9 @@
 package at.frosty.restaurant.menu.service;
 
+import at.frosty.restaurant.common.menu.exception.ConflictException;
 import at.frosty.restaurant.common.menu.exception.ErrorType;
 import at.frosty.restaurant.common.menu.exception.ForbiddenException;
+import at.frosty.restaurant.common.menu.exception.InternalServerException;
 import at.frosty.restaurant.common.menu.exception.NotFoundException;
 import at.frosty.restaurant.common.menu.model.Category;
 import at.frosty.restaurant.common.menu.model.Dish;
@@ -14,6 +16,7 @@ import at.frosty.restaurant.menu.repository.DishRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -33,12 +36,16 @@ public class MenuServiceImpl implements MenuService {
             DishSortType.NAME, Comparator.comparing(DishDto::getName)
     );
 
-    @Override
-    public DishDto getDishByUuid(UUID uuid) {
-        DishDto result = dishMapper.toDto(dishRepository.findById(uuid).orElseThrow(() -> {
+    private Dish getDishEntity(UUID uuid) {
+        return dishRepository.findById(uuid).orElseThrow(() -> {
             log.warn("{}: unable to find dish with uuid={}", className, uuid);
             return new NotFoundException("dish with uuid=" + uuid + " not found", ErrorType.DISH_NOT_FOUND);
-        }));
+        });
+    }
+
+    @Override
+    public DishDto getDishByUuid(UUID uuid) {
+        DishDto result = dishMapper.toDto(getDishEntity(uuid));
 
         if (!result.isActive()) {
             log.warn("{}: getByUuid(uuid={}) attempt to receive disabled dish", className, uuid);
@@ -121,22 +128,82 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<DishDto> searchDishes(String query, DishSearchType type) {
-        return List.of();
+        if(type.equals(DishSearchType.NAME)) {
+            List<DishDto> result = dishRepository.findByNameIgnoreCaseContaining(query).stream()
+                    .map(dishMapper::toDto)
+                    .toList();
+
+            log.info("{}: searchDishes(query={}, type={}) result ={}", className, query, type, result);
+            return result;
+        }
+
+        log.warn("{}: searchDishes(query={}, type={}) type not supported", className, query, type);
+        throw new InternalServerException("dish search type=" + type + " not supported", ErrorType.INTERNAL_ERROR);
     }
 
 
     @Override
+    @Transactional
     public DishDto createDish(DishDto dishDto) {
-        return null;
+        if (dishRepository.findByName(dishDto.getName()).isPresent()) {
+            log.warn("{}: createDish(dishDto={}) refused, dish with name={} already exists",
+                    className, dishDto, dishDto.getName());
+            throw new ConflictException("dish with name=" + dishDto.getName() + " already exists", ErrorType.DISH_ALREADY_EXISTS);
+        }
+
+        Dish entity = dishMapper.toEntity(dishDto);
+        entity = dishRepository.save(entity);
+        DishDto result = dishMapper.toDto(entity);
+
+        log.info("{}: createDish(dishDto={}) result={}", className, dishDto, result);
+        return result;
     }
 
     @Override
+    @Transactional
     public DishDto updateDish(UUID uuid, UpdateDishDto updateDishDto) {
-        return null;
+        Dish entity = getDishEntity(uuid);
+
+        if (updateDishDto.getName() != null) {
+            dishRepository.findByName(updateDishDto.getName())
+                    .filter(d -> !d.getId().equals(uuid))
+                    .ifPresent(d -> {
+                        log.warn("{}: updateDish(uuid={}, updateDishDto={}) refused, dish with name={} already exists",
+                                className, uuid, updateDishDto, updateDishDto.getName());
+                        throw new ConflictException("dish with name=" + updateDishDto.getName() + " already exists", ErrorType.DISH_ALREADY_EXISTS);
+                    });
+
+            entity.setName(updateDishDto.getName());
+        }
+        if (updateDishDto.getPrice() != null) {
+            entity.setPrice(updateDishDto.getPrice());
+        }
+        if (updateDishDto.getCategory() != null) {
+            entity.setCategory(updateDishDto.getCategory());
+        }
+        if (updateDishDto.getActive() != null) {
+            entity.setActive(updateDishDto.getActive());
+        }
+        if (updateDishDto.getAllergens() != null) {
+            entity.setAllergens(updateDishDto.getAllergens());
+        }
+
+        DishDto result = dishMapper.toDto(entity);
+        log.info("{}: updateDish(uuid={}, dishDto={}) result={}", className, uuid, updateDishDto, result);
+        return result;
     }
 
     @Override
+    @Transactional
     public void softDeleteDish(UUID uuid) {
+        Dish entity = getDishEntity(uuid);
 
+        if(!entity.isActive()) {
+            log.warn("{}: softDeleteDish(uuid={}) refused, dish already deactivated",
+                    className, uuid);
+            throw new ConflictException("dish with uuid=" + uuid + " already deactivated", ErrorType.DISH_ALREADY_DEACTIVATED);
+        }
+
+        entity.setActive(false);
     }
 }
