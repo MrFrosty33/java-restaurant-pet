@@ -177,21 +177,9 @@ public class MenuServiceImpl implements MenuService {
                                 className, uuid, updateDishDto, updateDishDto.getName());
                         throw new ConflictException("dish with name=" + updateDishDto.getName() + " already exists", ErrorType.DISH_ALREADY_EXISTS);
                     });
+        }
 
-            entity.setName(updateDishDto.getName());
-        }
-        if (updateDishDto.getPrice() != null) {
-            entity.setPrice(updateDishDto.getPrice());
-        }
-        if (updateDishDto.getCategory() != null) {
-            entity.setCategory(updateDishDto.getCategory());
-        }
-        if (updateDishDto.getActive() != null) {
-            entity.setActive(updateDishDto.getActive());
-        }
-        if (updateDishDto.getAllergens() != null) {
-            entity.setAllergens(updateDishDto.getAllergens());
-        }
+        dishMapper.updateDishFromUpdateDto(updateDishDto, entity);
 
         DishDto result = dishMapper.toDto(entity);
         log.info("{}: updateDish(uuid={}, dishDto={}) result={}", className, uuid, updateDishDto, result);
