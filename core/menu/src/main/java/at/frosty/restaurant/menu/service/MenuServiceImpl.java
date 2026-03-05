@@ -66,7 +66,8 @@ public class MenuServiceImpl implements MenuService {
             throw new NotFoundException("there are no active dishes in DB", ErrorType.DISH_NOT_FOUND);
         }
 
-        log.info("{}: getAllDishesSorted(sortBy={}) result={}", className, sortBy, result);
+        log.info("{}: getAllDishesSorted(sortBy={}) resultSize={}", className, sortBy, result.size());
+        log.debug("{}: getAllDishesSorted(sortBy={}) result={}", className, sortBy, result);
         return result;
     }
 
@@ -80,7 +81,8 @@ public class MenuServiceImpl implements MenuService {
             throw new NotFoundException("there are no deactivated dishes in DB", ErrorType.DISH_NOT_FOUND);
         }
 
-        log.info("{}: getDeactivatedDishesSorted(sortBy={}) result={}", className, sortBy, result);
+        log.info("{}: getDeactivatedDishesSorted(sortBy={}) resultSize={}", className, sortBy, result.size());
+        log.debug("{}: getDeactivatedDishesSorted(sortBy={}) result={}", className, sortBy, result);
         return result;
     }
 
@@ -94,7 +96,8 @@ public class MenuServiceImpl implements MenuService {
             throw new NotFoundException("there are no active dishes in DB with category=" + category, ErrorType.DISH_NOT_FOUND);
         }
 
-        log.info("{}: getDishesByCategory(category={}, sortBy={}) result={}", className, category, sortBy, result);
+        log.info("{}: getDishesByCategory(category={}, sortBy={}) resultSize={}", className, category, sortBy, result.size());
+        log.debug("{}: getDishesByCategory(category={}, sortBy={}) result={}", className, category, sortBy, result);
         return result;
     }
 
@@ -108,7 +111,8 @@ public class MenuServiceImpl implements MenuService {
             throw new NotFoundException("there are no deactivated dishes in DB with category=" + category, ErrorType.DISH_NOT_FOUND);
         }
 
-        log.info("{}: getDeactivatedDishesByCategory(sortBy={}) result={}", className, sortBy, result);
+        log.info("{}: getDeactivatedDishesByCategory(sortBy={}) resultSize={}", className, sortBy, result.size());
+        log.debug("{}: getDeactivatedDishesByCategory(sortBy={}) result={}", className, sortBy, result);
         return result;
     }
 
@@ -133,7 +137,8 @@ public class MenuServiceImpl implements MenuService {
                     .map(dishMapper::toDto)
                     .toList();
 
-            log.info("{}: searchDishes(query={}, type={}) result ={}", className, query, type, result);
+            log.info("{}: searchDishes(query={}, type={}) resultSize={}", className, query, type, result.size());
+            log.debug("{}: searchDishes(query={}, type={}) result={}", className, query, type, result);
             return result;
         }
 
