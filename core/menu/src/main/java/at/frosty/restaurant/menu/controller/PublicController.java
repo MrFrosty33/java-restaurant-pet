@@ -40,7 +40,7 @@ public class PublicController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<DishDto> getAll(@RequestParam(required = false) Category category,
-                                @RequestParam(required = false) DishSortType sortBy) {
+                                @RequestParam(defaultValue = "NAME") DishSortType sortBy) {
         log.info("{}: received getAll(category={}, sortBy={}) call", className, category, sortBy);
 
         if (category != null) {
