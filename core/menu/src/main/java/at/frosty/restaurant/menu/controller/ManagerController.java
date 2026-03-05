@@ -1,7 +1,9 @@
 package at.frosty.restaurant.menu.controller;
 
+import at.frosty.restaurant.common.menu.model.Category;
 import at.frosty.restaurant.common.menu.model.dto.DishDto;
 import at.frosty.restaurant.common.menu.model.dto.UpdateDishDto;
+import at.frosty.restaurant.menu.enums.DishSortType;
 import at.frosty.restaurant.menu.service.MenuService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,9 +38,17 @@ public class ManagerController {
 
     @GetMapping("/deactivated")
     @ResponseStatus(HttpStatus.OK)
-    public List<DishDto> getDeactivatedDishes(){
-        log.info("{}: received getDeactivatedDishes() call", className);
-        return service.getDeactivatedDishes();
+    public List<DishDto> getDeactivatedDishes(@RequestParam(required = false) Category category,
+                                              @RequestParam(defaultValue = "NAME") DishSortType sortBy){
+        log.info("{}: received getDeactivatedDishes(category={}, sortBy={})", className, category, sortBy);
+
+        if (category != null) {
+            log.trace("{}: redirecting to service.getDeactivatedDishesByCategory()", className);
+            return service.getDeactivatedByCategory(category, sortBy);
+        }
+
+        log.trace("{}: redirecting to service.getDeactivatedDishes()", className);
+        return service.getDeactivatedDishes(sortBy);
     }
 
     @PostMapping

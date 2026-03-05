@@ -16,7 +16,8 @@ public interface MenuService {
     List<DishDto> getByCategory(Category category, DishSortType sortBy);
     List<DishDto> search(String query, DishSearchType type);
     // admin methods
-    List<DishDto> getDeactivatedDishes();
+    List<DishDto> getDeactivatedDishes(DishSortType sortBy);
+    List<DishDto> getDeactivatedByCategory(Category category, DishSortType sortBy);
     DishDto createDish(DishDto dishDto);
     DishDto updateDish(UUID uuid, UpdateDishDto updateDishDto);
     void softDeleteDish(UUID uuid);
