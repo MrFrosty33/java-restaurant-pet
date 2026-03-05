@@ -44,11 +44,11 @@ public class ManagerController {
 
         if (category != null) {
             log.trace("{}: redirecting to service.getDeactivatedDishesByCategory()", className);
-            return service.getDeactivatedByCategory(category, sortBy);
+            return service.getDeactivatedDishesByCategory(category, sortBy);
         }
 
-        log.trace("{}: redirecting to service.getDeactivatedDishes()", className);
-        return service.getDeactivatedDishes(sortBy);
+        log.trace("{}: redirecting to service.getDeactivatedDishesSorted()", className);
+        return service.getDeactivatedDishesSorted(sortBy);
     }
 
     @PostMapping

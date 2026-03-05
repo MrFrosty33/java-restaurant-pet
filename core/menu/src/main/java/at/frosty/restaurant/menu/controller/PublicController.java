@@ -32,31 +32,31 @@ public class PublicController {
 
     @GetMapping("/{uuid}")
     @ResponseStatus(HttpStatus.OK)
-    public DishDto getByUuid(@PathVariable @NotNull UUID uuid) {
-        log.info("{}: received getByUuid(uuid={}) call", className, uuid);
-        return service.getByUuid(uuid);
+    public DishDto getDishByUuid(@PathVariable @NotNull UUID uuid) {
+        log.info("{}: received getDishByUuid(uuid={}) call", className, uuid);
+        return service.getDishByUuid(uuid);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<DishDto> getAll(@RequestParam(required = false) Category category,
+    public List<DishDto> getAllDishes(@RequestParam(required = false) Category category,
                                 @RequestParam(defaultValue = "NAME") DishSortType sortBy) {
-        log.info("{}: received getAll(category={}, sortBy={}) call", className, category, sortBy);
+        log.info("{}: received getAllDishes(category={}, sortBy={}) call", className, category, sortBy);
 
         if (category != null) {
-            log.trace("{}: redirecting to service.getByCategory()", className);
-            return service.getByCategory(category, sortBy);
+            log.trace("{}: redirecting to service.getDishesByCategory()", className);
+            return service.getDishesByCategory(category, sortBy);
         }
 
-        log.trace("{}: redirecting to service.getAllSorted()", className);
-        return service.getAllSorted(sortBy);
+        log.trace("{}: redirecting to service.getAllDishesSorted()", className);
+        return service.getAllDishesSorted(sortBy);
     }
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<DishDto> search(@RequestParam @NotNull @Length(min = 1) String query,
+    public List<DishDto> searchDishes(@RequestParam @NotNull @Length(min = 1) String query,
                                 @RequestParam(defaultValue = "NAME") DishSearchType type) {
-        log.info("{}: received search(type={}) call", className, type);
-        return service.search(query, type);
+        log.info("{}: received searchDishes(query={}, type={}) call", className, query, type);
+        return service.searchDishes(query, type);
     }
 }

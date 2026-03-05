@@ -11,13 +11,13 @@ import java.util.UUID;
 
 public interface MenuService {
     // public methods
-    DishDto getByUuid(UUID uuid);
-    List<DishDto> getAllSorted(DishSortType sortBy);
-    List<DishDto> getByCategory(Category category, DishSortType sortBy);
-    List<DishDto> search(String query, DishSearchType type);
+    DishDto getDishByUuid(UUID uuid);
+    List<DishDto> getAllDishesSorted(DishSortType sortBy);
+    List<DishDto> getDishesByCategory(Category category, DishSortType sortBy);
+    List<DishDto> searchDishes(String query, DishSearchType type);
     // admin methods
-    List<DishDto> getDeactivatedDishes(DishSortType sortBy);
-    List<DishDto> getDeactivatedByCategory(Category category, DishSortType sortBy);
+    List<DishDto> getDeactivatedDishesSorted(DishSortType sortBy);
+    List<DishDto> getDeactivatedDishesByCategory(Category category, DishSortType sortBy);
     DishDto createDish(DishDto dishDto);
     DishDto updateDish(UUID uuid, UpdateDishDto updateDishDto);
     void softDeleteDish(UUID uuid);
