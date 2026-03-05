@@ -5,9 +5,12 @@ import at.frosty.restaurant.common.menu.model.Dish;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface DishRepository extends JpaRepository<Dish, UUID> {
     List<Dish> findAllByActive(boolean active);
     List<Dish> findAllByActiveAndCategory(boolean active, Category category);
+    Optional<Dish> findByName(String name);
+    List<Dish> findByNameIgnoreCaseContaining(String name);
 }
