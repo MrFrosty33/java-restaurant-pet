@@ -15,6 +15,7 @@ spring:
 logging:
   level:
     at.frosty.restaurant: TRACE
+    #org.springframework.security: DEBUG
 
 management:
   endpoints:

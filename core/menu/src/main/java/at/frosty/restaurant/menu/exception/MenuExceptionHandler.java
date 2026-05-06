@@ -1,8 +1,11 @@
 package at.frosty.restaurant.menu.exception;
 
+import at.frosty.restaurant.common.menu.exception.ConflictException;
 import at.frosty.restaurant.common.menu.exception.ErrorMessage;
 import at.frosty.restaurant.common.menu.exception.ErrorType;
+import at.frosty.restaurant.common.menu.exception.ForbiddenException;
 import at.frosty.restaurant.common.menu.exception.IncludesErrorType;
+import at.frosty.restaurant.common.menu.exception.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,45 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class MenuExceptionHandler {
     private final String className = this.getClass().getSimpleName();
+
+    @ExceptionHandler(ConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorMessage handleConflict(ConflictException e, HttpServletRequest request) {
+        writeLog(e);
+        return ErrorMessage.builder()
+                .message(e.getMessage())
+                .errorType(e.getErrorType())
+                .status(HttpStatus.CONFLICT)
+                .apiPath(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleDishNotFound(NotFoundException e, HttpServletRequest request) {
+        writeLog(e);
+        return ErrorMessage.builder()
+                .message(e.getMessage())
+                .errorType(e.getErrorType())
+                .status(HttpStatus.NOT_FOUND)
+                .apiPath(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorMessage handleForbidden(ForbiddenException e, HttpServletRequest request) {
+        writeLog(e);
+        return ErrorMessage.builder()
+                .message(e.getMessage())
+                .errorType(e.getErrorType())
+                .status(HttpStatus.FORBIDDEN)
+                .apiPath(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
