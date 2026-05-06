@@ -18,6 +18,12 @@ public class RestaurantUserDetailsService implements UserDetailsService {
     private final String className = this.getClass().getSimpleName();
     private final UserRepository userRepository;
 
+    /**
+     * Authentication is DB-based.
+     * User registration is not implemented intentionally.
+     * Users must be created manually in the database with encoded passwords and appropriate roles.
+     */
+
     @Override
     public UserDetails loadUserByUsername(String username) {
         RestaurantUser restaurantUser = userRepository.findByUsername(username)
@@ -25,7 +31,6 @@ public class RestaurantUserDetailsService implements UserDetailsService {
                     log.warn("{}: unable to find user with username={}", className, username);
                     return new UsernameNotFoundException("User with username=" + username + " does not exist");
                 });
-
 
         UserDetails result = User.builder()
                 .username(restaurantUser.getUsername())
