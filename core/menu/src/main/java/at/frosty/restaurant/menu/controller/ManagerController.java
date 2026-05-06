@@ -66,6 +66,13 @@ public class ManagerController {
         return service.updateDish(uuid, updateDishDto);
     }
 
+    @PatchMapping("/{uuid}/activate")
+    @ResponseStatus(HttpStatus.OK)
+    public DishDto activateDish(@PathVariable @NotNull UUID uuid) {
+        log.info("{}: received activateDish(uuid={}) call", className, uuid);
+        return service.activateDish(uuid);
+    }
+
     @DeleteMapping("/{uuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void softDeleteDish(@PathVariable @NotNull UUID uuid) {

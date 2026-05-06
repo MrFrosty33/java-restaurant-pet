@@ -21,5 +21,6 @@ public interface MenuService {
     List<DishDto> getDeactivatedDishesByCategory(Category category, DishSortType sortBy);
     DishDto createDish(DishDto dishDto);
     DishDto updateDish(UUID uuid, UpdateDishDto updateDishDto);
+    DishDto activateDish(UUID uuid);
     void softDeleteDish(UUID uuid);
 }

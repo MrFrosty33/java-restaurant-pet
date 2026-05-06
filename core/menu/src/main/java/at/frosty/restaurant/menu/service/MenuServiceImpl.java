@@ -188,6 +188,24 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional
+    public DishDto activateDish(UUID uuid) {
+        Dish entity = getDishEntity(uuid);
+
+        if(entity.isActive()) {
+            log.warn("{}: activateDish() refused, dish already activated",
+                    className);
+            throw new ConflictException("dish with uuid=" + uuid + " already activated", ErrorType.DISH_ALREADY_ACTIVATED);
+        }
+
+        entity.setActive(true);
+
+        DishDto result = dishMapper.toDto(entity);
+        log.info("{}: activateDish() result={}", className, result);
+        return result;
+    }
+
+    @Override
+    @Transactional
     public void softDeleteDish(UUID uuid) {
         Dish entity = getDishEntity(uuid);
 
