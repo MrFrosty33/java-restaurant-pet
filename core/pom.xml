@@ -12,8 +12,8 @@
     <artifactId>core</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>menu</module>
         <module>common</module>
+        <module>menu</module>
     </modules>
 
     <properties>
