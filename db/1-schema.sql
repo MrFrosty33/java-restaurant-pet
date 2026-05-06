@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS dish_allergens (
 );
 
 CREATE TABLE IF NOT EXISTS users (
-    id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     username VARCHAR(150) NOT NULL,
     password VARCHAR(150) NOT NULL
 );
@@ -37,6 +37,6 @@ CREATE TABLE IF NOT EXISTS user_roles (
     user_id UUID REFERENCES users(id),
     role VARCHAR(100),
     CONSTRAINT check_role CHECK (role IN (
-    'ADMIN'
+    'MANAGER', 'OBSERVER'
     ))
 )
