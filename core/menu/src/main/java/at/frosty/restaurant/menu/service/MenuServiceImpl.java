@@ -48,11 +48,11 @@ public class MenuServiceImpl implements MenuService {
         DishDto result = dishMapper.toDto(getDishEntity(uuid));
 
         if (!result.isActive()) {
-            log.warn("{}: getByUuid(uuid={}) attempt to receive disabled dish", className, uuid);
+            log.warn("{}: getByUuid() attempt to receive disabled dish", className);
             throw new ForbiddenException("dish with uuid=" + uuid + " is deactivated", ErrorType.DISH_DEACTIVATED);
         }
 
-        log.info("{}: getByUuid(uuid={}) result={}", className, uuid, result);
+        log.info("{}: getByUuid() result={}", className, result);
         return result;
     }
 
@@ -62,12 +62,12 @@ public class MenuServiceImpl implements MenuService {
         List<DishDto> result = getDishes(active, null, sortBy);
 
         if (result.isEmpty()) {
-            log.warn("{}: getAllDishesSorted(sortBy={}) unable to find any active dish", className, sortBy);
+            log.warn("{}: getAllDishesSorted() unable to find any active dish", className);
             throw new NotFoundException("there are no active dishes in DB", ErrorType.DISH_NOT_FOUND);
         }
 
-        log.info("{}: getAllDishesSorted(sortBy={}) resultSize={}", className, sortBy, result.size());
-        log.debug("{}: getAllDishesSorted(sortBy={}) result={}", className, sortBy, result);
+        log.info("{}: getAllDishesSorted() resultSize={}", className, result.size());
+        log.debug("{}: getAllDishesSorted() result={}", className, result);
         return result;
     }
 
@@ -77,12 +77,12 @@ public class MenuServiceImpl implements MenuService {
         List<DishDto> result = getDishes(active, null, sortBy);
 
         if (result.isEmpty()) {
-            log.warn("{}: getDeactivatedDishesSorted(sortBy={}) unable to find any deactivated dish", className, sortBy);
+            log.warn("{}: getDeactivatedDishesSorted() unable to find any deactivated dish", className);
             throw new NotFoundException("there are no deactivated dishes in DB", ErrorType.DISH_NOT_FOUND);
         }
 
-        log.info("{}: getDeactivatedDishesSorted(sortBy={}) resultSize={}", className, sortBy, result.size());
-        log.debug("{}: getDeactivatedDishesSorted(sortBy={}) result={}", className, sortBy, result);
+        log.info("{}: getDeactivatedDishesSorted() resultSize={}", className, result.size());
+        log.debug("{}: getDeactivatedDishesSorted() result={}", className, result);
         return result;
     }
 
@@ -92,12 +92,12 @@ public class MenuServiceImpl implements MenuService {
         List<DishDto> result = getDishes(active, category, sortBy);
 
         if (result.isEmpty()) {
-            log.warn("{}: getDishesByCategory(category={}, sortBy={}) unable to find any active dish", className, category, sortBy);
+            log.warn("{}: getDishesByCategory() unable to find any active dish", className);
             throw new NotFoundException("there are no active dishes in DB with category=" + category, ErrorType.DISH_NOT_FOUND);
         }
 
-        log.info("{}: getDishesByCategory(category={}, sortBy={}) resultSize={}", className, category, sortBy, result.size());
-        log.debug("{}: getDishesByCategory(category={}, sortBy={}) result={}", className, category, sortBy, result);
+        log.info("{}: getDishesByCategory() resultSize={}", className, result.size());
+        log.debug("{}: getDishesByCategory() result={}", className, result);
         return result;
     }
 
@@ -107,12 +107,12 @@ public class MenuServiceImpl implements MenuService {
         List<DishDto> result = getDishes(active, category, sortBy);
 
         if (result.isEmpty()) {
-            log.warn("{}: getDeactivatedDishesByCategory(sortBy={}) unable to find any deactivated dish", className, sortBy);
+            log.warn("{}: getDeactivatedDishesByCategory() unable to find any deactivated dish", className);
             throw new NotFoundException("there are no deactivated dishes in DB with category=" + category, ErrorType.DISH_NOT_FOUND);
         }
 
-        log.info("{}: getDeactivatedDishesByCategory(sortBy={}) resultSize={}", className, sortBy, result.size());
-        log.debug("{}: getDeactivatedDishesByCategory(sortBy={}) result={}", className, sortBy, result);
+        log.info("{}: getDeactivatedDishesByCategory() resultSize={}", className, result.size());
+        log.debug("{}: getDeactivatedDishesByCategory() result={}", className, result);
         return result;
     }
 
@@ -137,12 +137,12 @@ public class MenuServiceImpl implements MenuService {
                     .map(dishMapper::toDto)
                     .toList();
 
-            log.info("{}: searchDishes(query={}, type={}) resultSize={}", className, query, type, result.size());
-            log.debug("{}: searchDishes(query={}, type={}) result={}", className, query, type, result);
+            log.info("{}: searchDishes() resultSize={}", className, result.size());
+            log.debug("{}: searchDishes() result={}", className, result);
             return result;
         }
 
-        log.warn("{}: searchDishes(query={}, type={}) type not supported", className, query, type);
+        log.warn("{}: searchDishes() type not supported", className);
         throw new InternalServerException("dish search type=" + type + " not supported", ErrorType.INTERNAL_ERROR);
     }
 
@@ -151,8 +151,8 @@ public class MenuServiceImpl implements MenuService {
     @Transactional
     public DishDto createDish(DishDto dishDto) {
         if (dishRepository.findByName(dishDto.getName()).isPresent()) {
-            log.warn("{}: createDish(dishDto={}) refused, dish with name={} already exists",
-                    className, dishDto, dishDto.getName());
+            log.warn("{}: createDish() refused, dish with name={} already exists",
+                    className, dishDto.getName());
             throw new ConflictException("dish with name=" + dishDto.getName() + " already exists", ErrorType.DISH_ALREADY_EXISTS);
         }
 
@@ -160,7 +160,7 @@ public class MenuServiceImpl implements MenuService {
         entity = dishRepository.save(entity);
         DishDto result = dishMapper.toDto(entity);
 
-        log.info("{}: createDish(dishDto={}) result={}", className, dishDto, result);
+        log.info("{}: createDish() result={}", className, result);
         return result;
     }
 
@@ -182,7 +182,7 @@ public class MenuServiceImpl implements MenuService {
         dishMapper.updateDishFromUpdateDto(updateDishDto, entity);
 
         DishDto result = dishMapper.toDto(entity);
-        log.info("{}: updateDish(uuid={}, dishDto={}) result={}", className, uuid, updateDishDto, result);
+        log.info("{}: updateDish() result={}", className, result);
         return result;
     }
 
@@ -192,11 +192,12 @@ public class MenuServiceImpl implements MenuService {
         Dish entity = getDishEntity(uuid);
 
         if(!entity.isActive()) {
-            log.warn("{}: softDeleteDish(uuid={}) refused, dish already deactivated",
-                    className, uuid);
+            log.warn("{}: softDeleteDish() refused, dish already deactivated",
+                    className);
             throw new ConflictException("dish with uuid=" + uuid + " already deactivated", ErrorType.DISH_ALREADY_DEACTIVATED);
         }
 
         entity.setActive(false);
+        log.info("{}: softDeleteDish() success", className);
     }
 }
