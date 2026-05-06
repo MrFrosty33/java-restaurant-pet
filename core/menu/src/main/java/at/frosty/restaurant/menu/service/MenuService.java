@@ -15,7 +15,8 @@ public interface MenuService {
     List<DishDto> getAllDishesSorted(DishSortType sortBy);
     List<DishDto> getDishesByCategory(Category category, DishSortType sortBy);
     List<DishDto> searchDishes(String query, DishSearchType type);
-    // admin methods
+
+    // manager methods
     List<DishDto> getDeactivatedDishesSorted(DishSortType sortBy);
     List<DishDto> getDeactivatedDishesByCategory(Category category, DishSortType sortBy);
     DishDto createDish(DishDto dishDto);
