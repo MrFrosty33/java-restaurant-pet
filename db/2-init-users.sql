@@ -18,6 +18,13 @@ SELECT u.id, 'OBSERVER'
 FROM users u
 WHERE u.username = 'frosty';
 
+-- username = observer, password = observer, role = OBSERVER
+INSERT INTO users (username, password)
+VALUES (
+    'observer',
+    '$2a$12$6/O6kjPTw7gvd5Ccf037PeK05Uba6mksuhgQch6agI/Q/V3qq7xAO'
+);
+
 -- username = waiter, password = waiter, role = -
 INSERT INTO users (username, password)
 VALUES (
