@@ -33,7 +33,6 @@ public class DishDto {
     private boolean active;
 
     @NotNull
-    @NotEmpty
     @Size(max = 14)
     private Set<Allergen> allergens;
 }
