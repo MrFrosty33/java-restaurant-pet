@@ -54,8 +54,9 @@ public class PublicController {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<DishDto> searchDishes(@RequestParam @NotNull @Length(min = 1) String query,
+    public List<DishDto> searchDishes(@RequestParam @NotNull @Length(min = 1, max = 150) String query,
                                 @RequestParam(defaultValue = "NAME") DishSearchType type) {
+        // when adding new DishSearchType change max length constraint
         log.info("{}: received searchDishes(query={}, type={}) call", className, query, type);
         return service.searchDishes(query, type);
     }
