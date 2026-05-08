@@ -1,0 +1,4027 @@
+{
+  "info": {
+    "_postman_id": "5cd5accb-606d-4fe6-b9b6-fe60226379e1",
+    "name": "restaurant-pet",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42528805"
+  },
+  "item": [
+    {
+      "name": "menu-service",
+      "item": [
+        {
+          "name": "manager API",
+          "item": [
+            {
+              "name": "service",
+              "item": [
+                {
+                  "name": "create dish",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 200 or 201\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+                          "});\r",
+                          "\r",
+                          "if (![200, 201].includes(pm.response.code)) {\r",
+                          "    console.log(\"Response status:\", pm.response.code);\r",
+                          "    console.log(\"Response body:\", pm.response.text());\r",
+                          "    return;\r",
+                          "}\r",
+                          "\r",
+                          "const createdDish = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Created dish has id\", function () {\r",
+                          "    pm.expect(createdDish.id).to.exist;\r",
+                          "    pm.expect(createdDish.id).to.not.be.null;\r",
+                          "    pm.expect(createdDish.id).to.not.be.empty;\r",
+                          "});\r",
+                          "\r",
+                          "pm.environment.set(\"created_dish_id_1\", createdDish.id);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Lachs Bowl\",\r\n  \"price\": 12.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "deactivate dish",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const deletedDishId = pm.environment.get(\"created_dish_id_1\");\r",
+                          "\r",
+                          "pm.test(\"Deleted dish id exists\", function () {\r",
+                          "    pm.expect(deletedDishId).to.exist;\r",
+                          "    pm.expect(deletedDishId).to.not.be.empty;\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Response status is 204\", function () {\r",
+                          "    pm.expect(pm.response.code).to.equal(204);\r",
+                          "});\r",
+                          "\r",
+                          "if (pm.response.code !== 204) {\r",
+                          "    console.log(\"Response status:\", pm.response.code);\r",
+                          "    console.log(\"Response body:\", pm.response.text());\r",
+                          "    return;\r",
+                          "}\r",
+                          "\r",
+                          "console.log(`Successfully deleted dish with id=${deletedDishId}`);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu/{{created_dish_id_1}}",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu",
+                        "{{created_dish_id_1}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "get deactivated dish",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const deletedDishId = pm.environment.get(\"created_dish_id_1\");\r",
+                          "\r",
+                          "pm.test(\"Deleted dish id exists\", function () {\r",
+                          "    pm.expect(deletedDishId).to.exist;\r",
+                          "    pm.expect(deletedDishId).to.not.be.empty;\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Response status is 200\", function () {\r",
+                          "    pm.expect(pm.response.code).to.equal(200);\r",
+                          "});\r",
+                          "\r",
+                          "if (pm.response.code !== 200) {\r",
+                          "    console.log(\"Response status:\", pm.response.code);\r",
+                          "    console.log(\"Response body:\", pm.response.text());\r",
+                          "    return;\r",
+                          "}\r",
+                          "\r",
+                          "const dishes = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Response is an array\", function () {\r",
+                          "    pm.expect(dishes).to.be.an(\"array\");\r",
+                          "});\r",
+                          "\r",
+                          "const foundDish = dishes.find(dish => dish.id === deletedDishId);\r",
+                          "\r",
+                          "pm.test(\"Deactivated dishes contain previously deleted dish\", function () {\r",
+                          "    pm.expect(foundDish).to.exist;\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Found dish is inactive\", function () {\r",
+                          "    pm.expect(foundDish.active).to.equal(false);\r",
+                          "});\r",
+                          "\r",
+                          "console.log(`Found deactivated dish with id=${deletedDishId}`);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu/deactivated",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu",
+                        "deactivated"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "doesn't exists in all dishes",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const deactivatedDishId = pm.environment.get(\"created_dish_id_1\");\r",
+                          "\r",
+                          "pm.test(\"Deactivated dish id exists\", function () {\r",
+                          "    pm.expect(deactivatedDishId).to.exist;\r",
+                          "    pm.expect(deactivatedDishId).to.not.be.empty;\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Response status is 200 or 404\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([200, 404]);\r",
+                          "});\r",
+                          "\r",
+                          "if (pm.response.code === 404) {\r",
+                          "    const errorResponse = pm.response.json();\r",
+                          "\r",
+                          "    pm.test(\"No active dishes found\", function () {\r",
+                          "        pm.expect(errorResponse.errorType).to.equal(\"DISH_NOT_FOUND\");\r",
+                          "        pm.expect(errorResponse.status).to.equal(\"NOT_FOUND\");\r",
+                          "    });\r",
+                          "\r",
+                          "    console.log(\"No active dishes found. Deactivated dish is not present.\");\r",
+                          "    return;\r",
+                          "}\r",
+                          "\r",
+                          "const activeDishes = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Active dishes response is an array\", function () {\r",
+                          "    pm.expect(activeDishes).to.be.an(\"array\");\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Deactivated dish is not present in active dishes list\", function () {\r",
+                          "    const foundDish = activeDishes.find(dish => dish.id === deactivatedDishId);\r",
+                          "    pm.expect(foundDish).to.be.undefined;\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "activate dish",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const activatedDishId = pm.environment.get(\"created_dish_id_1\");\r",
+                          "\r",
+                          "pm.test(\"Activated dish id exists\", function () {\r",
+                          "    pm.expect(activatedDishId).to.exist;\r",
+                          "    pm.expect(activatedDishId).to.not.be.empty;\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Response status is 200\", function () {\r",
+                          "    pm.expect(pm.response.code).to.equal(200);\r",
+                          "});\r",
+                          "\r",
+                          "if (pm.response.code !== 200) {\r",
+                          "    console.log(\"Response status:\", pm.response.code);\r",
+                          "    console.log(\"Response body:\", pm.response.text());\r",
+                          "    return;\r",
+                          "}\r",
+                          "\r",
+                          "const activatedDish = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Activated dish has correct id\", function () {\r",
+                          "    pm.expect(activatedDish.id).to.equal(activatedDishId);\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Activated dish is active\", function () {\r",
+                          "    pm.expect(activatedDish.active).to.equal(true);\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Activated dish fields are not null or empty\", function () {\r",
+                          "    pm.expect(activatedDish.name).to.exist.and.not.be.empty;\r",
+                          "    pm.expect(activatedDish.price).to.exist;\r",
+                          "    pm.expect(activatedDish.category).to.exist.and.not.be.empty;\r",
+                          "    pm.expect(activatedDish.allergens).to.exist;\r",
+                          "});\r",
+                          "\r",
+                          "console.log(`Successfully activated dish with id=${activatedDishId}`);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PATCH",
+                    "header": [],
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu/{{created_dish_id_1}}/activate",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu",
+                        "{{created_dish_id_1}}",
+                        "activate"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "update dish",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const updatedDishId = pm.environment.get(\"created_dish_id_1\");\r",
+                          "\r",
+                          "pm.test(\"Updated dish id exists\", function () {\r",
+                          "    pm.expect(updatedDishId).to.exist;\r",
+                          "    pm.expect(updatedDishId).to.not.be.empty;\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Response status is 200\", function () {\r",
+                          "    pm.expect(pm.response.code).to.equal(200);\r",
+                          "});\r",
+                          "\r",
+                          "if (pm.response.code !== 200) {\r",
+                          "    console.log(\"Response status:\", pm.response.code);\r",
+                          "    console.log(\"Response body:\", pm.response.text());\r",
+                          "    return;\r",
+                          "}\r",
+                          "\r",
+                          "const updatedDish = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Updated dish has correct id\", function () {\r",
+                          "    pm.expect(updatedDish.id).to.equal(updatedDishId);\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Updated fields are correct\", function () {\r",
+                          "    pm.expect(updatedDish.name).to.equal(\"Updated Caesar Salad\");\r",
+                          "    pm.expect(updatedDish.price).to.equal(14.50);\r",
+                          "    pm.expect(updatedDish.category).to.equal(\"SALAD\");\r",
+                          "\r",
+                          "    pm.expect(updatedDish.allergens).to.include(\"A\");\r",
+                          "    pm.expect(updatedDish.allergens).to.include(\"G\");\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Updated dish fields are not null or empty\", function () {\r",
+                          "    pm.expect(updatedDish.name).to.exist.and.not.be.empty;\r",
+                          "    pm.expect(updatedDish.price).to.exist;\r",
+                          "    pm.expect(updatedDish.category).to.exist.and.not.be.empty;\r",
+                          "    pm.expect(updatedDish.allergens).to.exist;\r",
+                          "});\r",
+                          "\r",
+                          "console.log(`Successfully updated dish with id=${updatedDishId}`);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PATCH",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Updated Caesar Salad\",\r\n  \"price\": 14.50,\r\n  \"category\": \"SALAD\",\r\n  \"allergens\": [\"A\", \"G\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu/{{created_dish_id_1}}",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu",
+                        "{{created_dish_id_1}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "exists in all dishes",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const dishId = pm.environment.get(\"created_dish_id_1\");\r",
+                          "\r",
+                          "pm.test(\"Dish id exists\", function () {\r",
+                          "    pm.expect(dishId).to.exist;\r",
+                          "    pm.expect(dishId).to.not.be.empty;\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Response status is 200\", function () {\r",
+                          "    pm.expect(pm.response.code).to.equal(200);\r",
+                          "});\r",
+                          "\r",
+                          "if (pm.response.code !== 200) {\r",
+                          "    console.log(\"Response status:\", pm.response.code);\r",
+                          "    console.log(\"Response body:\", pm.response.text());\r",
+                          "    return;\r",
+                          "}\r",
+                          "\r",
+                          "const dishes = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Response is an array\", function () {\r",
+                          "    pm.expect(dishes).to.be.an(\"array\");\r",
+                          "});\r",
+                          "\r",
+                          "const foundDish = dishes.find(dish => dish.id === dishId);\r",
+                          "\r",
+                          "pm.test(\"Dish is present in all dishes list\", function () {\r",
+                          "    pm.expect(foundDish).to.exist;\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Found dish has correct id\", function () {\r",
+                          "    pm.expect(foundDish.id).to.equal(dishId);\r",
+                          "});\r",
+                          "\r",
+                          "console.log(`Dish with id=${dishId} exists in all dishes list`);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create dish with existing name",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Cannot create dish with existing name\", function () {\r",
+                          "    pm.response.to.have.status(409);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Updated Caesar Salad\",\r\n  \"price\": 13.00,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create another dish",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 200 or 201\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+                          "});\r",
+                          "\r",
+                          "if (![200, 201].includes(pm.response.code)) {\r",
+                          "    console.log(\"Response status:\", pm.response.code);\r",
+                          "    console.log(\"Response body:\", pm.response.text());\r",
+                          "    return;\r",
+                          "}\r",
+                          "\r",
+                          "const createdDish = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Created dish has id\", function () {\r",
+                          "    pm.expect(createdDish.id).to.exist;\r",
+                          "    pm.expect(createdDish.id).to.not.be.null;\r",
+                          "    pm.expect(createdDish.id).to.not.be.empty;\r",
+                          "});\r",
+                          "\r",
+                          "pm.environment.set(\"created_dish_id_2\", createdDish.id);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Chicken Fried Bowl\",\r\n  \"price\": 10.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "update dish on existing name",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Cannot update dish to existing name\", function () {\r",
+                          "    pm.response.to.have.status(409);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PATCH",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Updated Caesar Salad\",\r\n  \"price\": 12.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu/{{created_dish_id_2}}",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu",
+                        "{{created_dish_id_2}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "roles",
+              "item": [
+                {
+                  "name": "create dish as waiter",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"OBSERVER role has no access to resource\", function () {\r",
+                          "    pm.response.to.have.status(403);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "waiter",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "waiter",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Lachs Bowl\",\r\n  \"price\": 12.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create dish as observer",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"OBSERVER role has no access to resource\", function () {\r",
+                          "    pm.response.to.have.status(403);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "observer",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "observer",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Lachs Bowl\",\r\n  \"price\": 12.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create dish as manager",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"MANAGER role do has access to resource\", function () {\r",
+                          "    pm.response.to.have.status(201);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Tuna Bowl\",\r\n  \"price\": 14.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create dish without authorization",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Unauthorized users has no access to resource\", function () {\r",
+                          "    pm.response.to.have.status(401);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Tuna Bowl\",\r\n  \"price\": 14.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "validation",
+              "item": [
+                {
+                  "name": "create dish without body",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 400 or 500\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([400, 500]);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create dish withouth price",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 400 or 500\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([400, 500]);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Ultra Deluxe Crispy Chicken Teriyaki Bowl with Roasted Vegetables, Creamy Garlic Sauce, Sesame Topping and Homemade Spicy Mango Dressing Extra Large!!!\",\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create dish with negative price",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 400 or 500\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([400, 500]);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Ultra Deluxe Crispy Chicken Teriyaki Bowl\",\r\n  \"price\": -12.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create dish withouth category",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 400 or 500\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([400, 500]);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Ultra Deluxe Crispy Chicken Teriyaki Bowl with Roasted Vegetables, Creamy Garlic Sauce, Sesame Topping and Homemade Spicy Mango Dressing Extra Large!!!\",\r\n  \"price\": 12.50,\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create dish withouth name Copy",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 400 or 500\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([400, 500]);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"price\": 12.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create dish with over 150 symbols name",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 400 or 500\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([400, 500]);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Ultra Deluxe Crispy Chicken Teriyaki Bowl with Roasted Vegetables, Creamy Garlic Sauce, Sesame Topping and Homemade Spicy Mango Dressing Extra Large!!!\",\r\n  \"price\": 12.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create dish without allergens",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 200\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.equal(201);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Ultra Deluxe Crispy Chicken Teriyaki Bowl\",\r\n  \"price\": 12.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\":[]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "public API",
+          "item": [
+            {
+              "name": "roles",
+              "item": [
+                {
+                  "name": "get all dishes as waiter",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"WAITER role has access to resource\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([200, 404]);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "waiter",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "waiter",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Lachs Bowl\",\r\n  \"price\": 12.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "get all dishes as observer",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"OBSERVER role has access to resource\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([200, 404]);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "observer",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "observer",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Lachs Bowl\",\r\n  \"price\": 12.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "get all dishes as manager",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"MANAGER role has access to resource\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([200, 404]);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Lachs Bowl\",\r\n  \"price\": 12.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "get all dishes without authorization",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Unauthorized users has access to resource\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([200, 404]);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Lachs Bowl\",\r\n  \"price\": 12.50,\r\n  \"category\": \"SALAD\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "dishes",
+              "item": [
+                {
+                  "name": "create dish",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 200 or 201\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+                          "});\r",
+                          "\r",
+                          "if (![200, 201].includes(pm.response.code)) {\r",
+                          "    console.log(\"Response status:\", pm.response.code);\r",
+                          "    console.log(\"Response body:\", pm.response.text());\r",
+                          "    return;\r",
+                          "}\r",
+                          "\r",
+                          "const createdDish = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Created dish has id\", function () {\r",
+                          "    pm.expect(createdDish.id).to.exist;\r",
+                          "    pm.expect(createdDish.id).to.not.be.null;\r",
+                          "    pm.expect(createdDish.id).to.not.be.empty;\r",
+                          "});\r",
+                          "\r",
+                          "pm.environment.set(\"created_dish_id_3\", createdDish.id);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Panna Cotta\",\r\n  \"price\": 6,\r\n  \"category\": \"DESSERT\",\r\n  \"active\": true,\r\n  \"allergens\": [\"G\",\"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create dish",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 200 or 201\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+                          "});\r",
+                          "\r",
+                          "if (![200, 201].includes(pm.response.code)) {\r",
+                          "    console.log(\"Response status:\", pm.response.code);\r",
+                          "    console.log(\"Response body:\", pm.response.text());\r",
+                          "    return;\r",
+                          "}\r",
+                          "\r",
+                          "const createdDish = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Created dish has id\", function () {\r",
+                          "    pm.expect(createdDish.id).to.exist;\r",
+                          "    pm.expect(createdDish.id).to.not.be.null;\r",
+                          "    pm.expect(createdDish.id).to.not.be.empty;\r",
+                          "});\r",
+                          "\r",
+                          "pm.environment.set(\"created_dish_id_3\", createdDish.id);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "basic",
+                      "basic": [
+                        {
+                          "key": "password",
+                          "value": "manager",
+                          "type": "string"
+                        },
+                        {
+                          "key": "username",
+                          "value": "manager",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Mohr im Hemd\",\r\n  \"price\": 7.30,\r\n  \"category\": \"DESSERT\",\r\n  \"active\": true,\r\n  \"allergens\": [\"A\", \"C\", \"G\", \"H\", \"F\"]\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/management/menu",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "management",
+                        "menu"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "get by id",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 200\", function () {\r",
+                          "    pm.expect(pm.response.code).to.equal(200);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/menu/{{created_dish_id_3}}",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "menu",
+                        "{{created_dish_id_3}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "search by name",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 200\", function () {\r",
+                          "    pm.expect(pm.response.code).to.equal(200);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/menu/search?query=MoHr",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "menu",
+                        "search"
+                      ],
+                      "query": [
+                        {
+                          "key": "query",
+                          "value": "MoHr"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "get by category",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response contains 2 dishes\", function () {\r",
+                          "    pm.response.to.have.status(200);\r",
+                          "\r",
+                          "    const json = pm.response.json();\r",
+                          "    pm.expect(json.length).to.eql(2);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/menu?category=DESSERT",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "menu"
+                      ],
+                      "query": [
+                        {
+                          "key": "category",
+                          "value": "DESSERT"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "get by category amd sorted",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 200\", function () {\r",
+                          "    pm.response.to.have.status(200);\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Response contains 2 dishes\", function () {\r",
+                          "    const json = pm.response.json();\r",
+                          "\r",
+                          "    pm.expect(json).to.be.an(\"array\");\r",
+                          "    pm.expect(json.length).to.eql(2);\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Dishes are sorted by price ASC\", function () {\r",
+                          "    const json = pm.response.json();\r",
+                          "\r",
+                          "    for (let i = 0; i < json.length - 1; i++) {\r",
+                          "        pm.expect(json[i].price).to.be.at.most(json[i + 1].price);\r",
+                          "    }\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/menu?category=DESSERT&sortBy=PRICE",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "menu"
+                      ],
+                      "query": [
+                        {
+                          "key": "category",
+                          "value": "DESSERT"
+                        },
+                        {
+                          "key": "sortBy",
+                          "value": "PRICE"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "search by name with empty query",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 400\", function () {\r",
+                          "    pm.expect(pm.response.code).to.equal(400);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/menu/search?query=",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "menu",
+                        "search"
+                      ],
+                      "query": [
+                        {
+                          "key": "query",
+                          "value": ""
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "search by name with over 150 symbols query",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "const serviceName = 'menu-service';\r",
+                          "\r",
+                          "pm.sendRequest({\r",
+                          "    url: `http://localhost:8761/eureka/apps/${serviceName.toUpperCase()}`,\r",
+                          "    method: 'GET',\r",
+                          "    header: {\r",
+                          "        'Accept': 'application/json'\r",
+                          "    }\r",
+                          "}, function (err, res) {\r",
+                          "    if (err) {\r",
+                          "        console.error('Eureka request failed:', err);\r",
+                          "        return;\r",
+                          "    }\r",
+                          "\r",
+                          "    const body = res.json();\r",
+                          "\r",
+                          "    console.log('Eureka response:', body);\r",
+                          "\r",
+                          "    const app = body.application;\r",
+                          "\r",
+                          "    if (!app || !app.instance) {\r",
+                          "        throw new Error(`No instances found for service: ${serviceName}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    const instance = Array.isArray(app.instance)\r",
+                          "        ? app.instance[0]\r",
+                          "        : app.instance;\r",
+                          "\r",
+                          "    const host = instance.hostName || instance.ipAddr || 'localhost';\r",
+                          "\r",
+                          "    let port;\r",
+                          "\r",
+                          "    if (typeof instance.port === 'number') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (typeof instance.port === 'string') {\r",
+                          "        port = instance.port;\r",
+                          "    } else if (instance.port && instance.port.$) {\r",
+                          "        port = instance.port.$;\r",
+                          "    } else if (instance.port && instance.port['$']) {\r",
+                          "        port = instance.port['$'];\r",
+                          "    } else {\r",
+                          "        throw new Error(`Cannot resolve port from Eureka instance: ${JSON.stringify(instance.port)}`);\r",
+                          "    }\r",
+                          "\r",
+                          "    pm.environment.set('service_host', host);\r",
+                          "    pm.environment.set('service_port', port);\r",
+                          "\r",
+                          "    console.log(`Resolved ${serviceName} -> ${host}:${port}`);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Response status is 400\", function () {\r",
+                          "    pm.expect(pm.response.code).to.equal(400);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://{{service_host}}:{{service_port}}/menu/search?query=Ultra Deluxe Crispy Chicken Teriyaki Bowl with Roasted Vegetables, Creamy Garlic Sauce, Sesame Topping and Homemade Spicy Mango Dressing Extra Large!!!",
+                      "protocol": "http",
+                      "host": [
+                        "{{service_host}}"
+                      ],
+                      "port": "{{service_port}}",
+                      "path": [
+                        "menu",
+                        "search"
+                      ],
+                      "query": [
+                        {
+                          "key": "query",
+                          "value": "Ultra Deluxe Crispy Chicken Teriyaki Bowl with Roasted Vegetables, Creamy Garlic Sauce, Sesame Topping and Homemade Spicy Mango Dressing Extra Large!!!"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
