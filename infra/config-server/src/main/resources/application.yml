@@ -9,7 +9,8 @@ spring:
       server:
         native:
           searchLocations:
-            - classpath:config/infra/{application}/
+            - classpath:configurations/infra/{application}/
+            - classpath:configurations/core/{application}/
 
 server:
   port: 0

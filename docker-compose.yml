@@ -1,0 +1,11 @@
+services:
+  microservices-db:
+    image: postgres:16.1
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: frosty
+      POSTGRES_PASSWORD: restaurant
+    ports:
+      - "6767:5432"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
