@@ -20,6 +20,5 @@ public class UpdateDishDto {
 
     private Category category;
 
-    @Size(max = 14)
     private Set<Allergen> allergens;
 }

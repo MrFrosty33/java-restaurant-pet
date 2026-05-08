@@ -11,6 +11,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,6 +34,5 @@ public class DishDto {
     private boolean active;
 
     @NotNull
-    @Size(max = 14)
-    private Set<Allergen> allergens;
+    private Set<Allergen> allergens = new HashSet<>();
 }
