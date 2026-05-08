@@ -4,7 +4,7 @@ CREATE DATABASE menu_dishes;
 
 CREATE TABLE IF NOT EXISTS dishes (
     id UUID PRIMARY KEY,
-    name VARCHAR(150) NOT NULL,
+    name VARCHAR(150) UNIQUE NOT NULL,
     price NUMERIC(5, 2) NOT NULL,
     category VARCHAR(100),
     active BOOLEAN,
