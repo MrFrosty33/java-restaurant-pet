@@ -50,7 +50,7 @@ public class MenuExceptionHandler {
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorMessage handleForbidden(ForbiddenException e, HttpServletRequest request) {
         writeLog(e);
         return ErrorMessage.builder()
