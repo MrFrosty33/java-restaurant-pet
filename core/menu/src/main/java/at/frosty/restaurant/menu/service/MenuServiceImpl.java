@@ -150,7 +150,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional
     public DishDto createDish(DishDto dishDto) {
-        if (dishRepository.findByName(dishDto.getName()).isPresent()) {
+        if (dishRepository.findByNameIgnoreCase(dishDto.getName()).isPresent()) {
             log.warn("{}: createDish() refused, dish with name={} already exists",
                     className, dishDto.getName());
             throw new ConflictException("dish with name=" + dishDto.getName() + " already exists", ErrorType.DISH_ALREADY_EXISTS);
@@ -170,7 +170,7 @@ public class MenuServiceImpl implements MenuService {
         Dish entity = getDishEntity(uuid);
 
         if (updateDishDto.getName() != null) {
-            dishRepository.findByName(updateDishDto.getName())
+            dishRepository.findByNameIgnoreCase(updateDishDto.getName())
                     .filter(d -> !d.getId().equals(uuid))
                     .ifPresent(d -> {
                         log.warn("{}: updateDish(uuid={}, updateDishDto={}) refused, dish with name={} already exists",

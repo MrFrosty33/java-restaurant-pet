@@ -11,6 +11,6 @@ import java.util.UUID;
 public interface DishRepository extends JpaRepository<Dish, UUID> {
     List<Dish> findAllByActive(boolean active);
     List<Dish> findAllByActiveAndCategory(boolean active, Category category);
-    Optional<Dish> findByName(String name);
+    Optional<Dish> findByNameIgnoreCase(String name);
     List<Dish> findByNameIgnoreCaseContaining(String name);
 }
