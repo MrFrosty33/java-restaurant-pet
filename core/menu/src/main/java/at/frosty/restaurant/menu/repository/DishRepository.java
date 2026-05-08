@@ -12,5 +12,5 @@ public interface DishRepository extends JpaRepository<Dish, UUID> {
     List<Dish> findAllByActive(boolean active);
     List<Dish> findAllByActiveAndCategory(boolean active, Category category);
     Optional<Dish> findByNameIgnoreCase(String name);
-    List<Dish> findByNameIgnoreCaseContaining(String name);
+    List<Dish> findByNameIgnoreCaseContainingAndActiveTrue(String name);
 }

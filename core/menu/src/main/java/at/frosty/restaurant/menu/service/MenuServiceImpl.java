@@ -133,7 +133,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<DishDto> searchDishes(String query, DishSearchType type) {
         if(type.equals(DishSearchType.NAME)) {
-            List<DishDto> result = dishRepository.findByNameIgnoreCaseContaining(query).stream()
+            List<DishDto> result = dishRepository.findByNameIgnoreCaseContainingAndActiveTrue(query).stream()
                     .map(dishMapper::toDto)
                     .toList();
 
