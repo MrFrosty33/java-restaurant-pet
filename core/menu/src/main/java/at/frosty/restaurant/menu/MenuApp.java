@@ -7,7 +7,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication(scanBasePackages = {"at.frosty.restaurant.menu", "at.frosty.restaurant.common.menu"})
 @EntityScan(basePackages = "at.frosty.restaurant.common.menu.model")
-@EnableFeignClients(basePackages = "at.frosty.restaurant.common.menu.feign")
 public class MenuApp {
     public static void main(String[] args) {
         SpringApplication.run(MenuApp.class);
