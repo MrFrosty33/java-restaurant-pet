@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.UUID;
 
-@FeignClient(name = "menu-service", fallback = MenuFallback.class)
+@FeignClient(name = "menu-service", fallbackFactory = MenuFallback.class)
 public interface MenuClient {
     @GetMapping("/internal/menu/{uuid}")
     DishOrderDto getDishOrderByUuid(@PathVariable @NotNull UUID uuid);
