@@ -2,6 +2,7 @@ package at.frosty.restaurant.common.menu.model.mapper;
 
 import at.frosty.restaurant.common.menu.model.Dish;
 import at.frosty.restaurant.common.menu.model.dto.DishDto;
+import at.frosty.restaurant.common.menu.model.dto.DishOrderDto;
 import at.frosty.restaurant.common.menu.model.dto.UpdateDishDto;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -15,6 +16,8 @@ public interface DishMapper {
     Dish toEntity(DishDto dto);
 
     DishDto toDto(Dish entity);
+
+    DishOrderDto toOrderDto(Dish entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateDishFromUpdateDto(UpdateDishDto dto, @MappingTarget Dish entity);
