@@ -2,6 +2,7 @@ package at.frosty.restaurant.menu.service;
 
 import at.frosty.restaurant.common.menu.model.Category;
 import at.frosty.restaurant.common.menu.model.dto.DishDto;
+import at.frosty.restaurant.common.menu.model.dto.DishOrderDto;
 import at.frosty.restaurant.common.menu.model.dto.UpdateDishDto;
 import at.frosty.restaurant.menu.enums.DishSearchType;
 import at.frosty.restaurant.menu.enums.DishSortType;
@@ -23,4 +24,7 @@ public interface MenuService {
     DishDto updateDish(UUID uuid, UpdateDishDto updateDishDto);
     DishDto activateDish(UUID uuid);
     void softDeleteDish(UUID uuid);
+
+    //internal methods
+    DishOrderDto getDishOrderByUuid(UUID uuid);
 }
