@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/**").hasRole("OBSERVER")
                         .requestMatchers("/management/**").hasRole("MANAGER")
+                        .requestMatchers("/internal/**").hasRole("SERVICE")
                         .requestMatchers("/menu/**").permitAll()
                         .anyRequest().authenticated()
                 )
