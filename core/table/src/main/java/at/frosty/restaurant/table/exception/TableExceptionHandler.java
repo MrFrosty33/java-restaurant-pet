@@ -1,4 +1,4 @@
-package at.frosty.restaurant.menu.exception;
+package at.frosty.restaurant.table.exception;
 
 import at.frosty.restaurant.common.exception.ConflictException;
 import at.frosty.restaurant.common.exception.ErrorMessage;
@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @RestControllerAdvice
-public class MenuExceptionHandler {
+public class TableExceptionHandler {
     private final String className = this.getClass().getSimpleName();
 
     @ExceptionHandler(ConflictException.class)
