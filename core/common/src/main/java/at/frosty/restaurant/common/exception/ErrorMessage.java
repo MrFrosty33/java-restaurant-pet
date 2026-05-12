@@ -1,4 +1,4 @@
-package at.frosty.restaurant.common.menu.exception;
+package at.frosty.restaurant.common.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;

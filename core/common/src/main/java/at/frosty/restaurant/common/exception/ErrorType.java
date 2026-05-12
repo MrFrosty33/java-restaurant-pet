@@ -1,4 +1,4 @@
-package at.frosty.restaurant.common.menu.exception;
+package at.frosty.restaurant.common.exception;
 
 public enum ErrorType {
     DISH_NOT_FOUND,

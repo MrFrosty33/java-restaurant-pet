@@ -1,4 +1,4 @@
-package at.frosty.restaurant.common.menu.exception;
+package at.frosty.restaurant.common.exception;
 
 public class ForbiddenException extends CustomException {
     public ForbiddenException(String message, ErrorType errorType) {

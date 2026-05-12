@@ -1,11 +1,11 @@
 package at.frosty.restaurant.menu.exception;
 
-import at.frosty.restaurant.common.menu.exception.ConflictException;
-import at.frosty.restaurant.common.menu.exception.ErrorMessage;
-import at.frosty.restaurant.common.menu.exception.ErrorType;
-import at.frosty.restaurant.common.menu.exception.ForbiddenException;
-import at.frosty.restaurant.common.menu.exception.IncludesErrorType;
-import at.frosty.restaurant.common.menu.exception.NotFoundException;
+import at.frosty.restaurant.common.exception.ConflictException;
+import at.frosty.restaurant.common.exception.ErrorMessage;
+import at.frosty.restaurant.common.exception.ErrorType;
+import at.frosty.restaurant.common.exception.ForbiddenException;
+import at.frosty.restaurant.common.exception.IncludesErrorType;
+import at.frosty.restaurant.common.exception.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
