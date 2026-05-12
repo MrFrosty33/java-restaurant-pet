@@ -6,6 +6,7 @@ import at.frosty.restaurant.common.exception.ErrorType;
 import at.frosty.restaurant.common.exception.ForbiddenException;
 import at.frosty.restaurant.common.exception.IncludesErrorType;
 import at.frosty.restaurant.common.exception.NotFoundException;
+import at.frosty.restaurant.common.exception.ServiceUnavailableException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +58,19 @@ public class MenuExceptionHandler {
                 .message(e.getMessage())
                 .errorType(e.getErrorType())
                 .status(HttpStatus.FORBIDDEN)
+                .apiPath(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ErrorMessage handleForbidden(ServiceUnavailableException e, HttpServletRequest request) {
+        writeLog(e);
+        return ErrorMessage.builder()
+                .message(e.getMessage())
+                .errorType(e.getErrorType())
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .apiPath(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
                 .build();
