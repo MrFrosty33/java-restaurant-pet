@@ -13,9 +13,9 @@ public interface TableService {
     void deleteTable(UUID uuid);
 
     // internal methods
-    TableDto getTableByUuid(UUID uuid);
     List<TableDto> getAllTablesWithCapacity(int capacity);
 
     // manager and internal methods
+    TableDto getTableByUuid(UUID uuid);
     List<TableDto> getAllTables();
 }
