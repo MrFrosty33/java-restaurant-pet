@@ -1,6 +1,6 @@
-package at.frosty.restaurant.menu.repository;
+package at.frosty.restaurant.common.security.repository;
 
-import at.frosty.restaurant.common.menu.model.RestaurantUser;
+import at.frosty.restaurant.common.security.model.RestaurantUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

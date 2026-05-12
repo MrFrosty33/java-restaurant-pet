@@ -8,6 +8,7 @@ import at.frosty.restaurant.common.exception.NotFoundException;
 import at.frosty.restaurant.common.menu.model.Category;
 import at.frosty.restaurant.common.menu.model.Dish;
 import at.frosty.restaurant.common.menu.model.dto.DishDto;
+import at.frosty.restaurant.common.menu.model.dto.DishOrderDto;
 import at.frosty.restaurant.common.menu.model.dto.UpdateDishDto;
 import at.frosty.restaurant.common.menu.model.mapper.DishMapper;
 import at.frosty.restaurant.menu.enums.DishSearchType;
@@ -146,6 +147,17 @@ public class MenuServiceImpl implements MenuService {
         throw new InternalServerException("dish search type=" + type + " not supported", ErrorType.INTERNAL_ERROR);
     }
 
+    @Override
+    public DishOrderDto getDishOrderByUuid(UUID uuid) {
+        Dish entity = getDishEntity(uuid);
+
+        if(!entity.isActive()) {
+            log.warn("{}: getDishOrderByUuid() unable to find active dish with uuid={}", className, uuid);
+            throw new NotFoundException("dish with uuid=" + uuid + " either not exists or is deactivated", ErrorType.DISH_NOT_FOUND);
+        }
+
+        return dishMapper.toOrderDto(entity);
+    }
 
     @Override
     @Transactional

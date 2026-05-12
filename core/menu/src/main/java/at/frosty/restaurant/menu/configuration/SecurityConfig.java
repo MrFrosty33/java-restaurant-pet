@@ -1,11 +1,9 @@
 package at.frosty.restaurant.menu.configuration;
 
-import at.frosty.restaurant.menu.service.RestaurantUserDetailsService;
+import at.frosty.restaurant.common.security.service.RestaurantUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -32,6 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/**").hasRole("OBSERVER")
                         .requestMatchers("/management/**").hasRole("MANAGER")
+                        .requestMatchers("/internal/**").hasRole("SERVICE")
                         .requestMatchers("/menu/**").permitAll()
                         .anyRequest().authenticated()
                 )

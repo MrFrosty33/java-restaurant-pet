@@ -1,4 +1,4 @@
-package at.frosty.restaurant.common.menu.model;
+package at.frosty.restaurant.common.security.model;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

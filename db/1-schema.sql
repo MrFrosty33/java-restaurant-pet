@@ -37,6 +37,6 @@ CREATE TABLE IF NOT EXISTS user_roles (
     user_id UUID REFERENCES users(id),
     role VARCHAR(100),
     CONSTRAINT check_role CHECK (role IN (
-    'MANAGER', 'OBSERVER'
+    'MANAGER', 'OBSERVER', 'SERVICE', 'WAITER'
     ))
 )
