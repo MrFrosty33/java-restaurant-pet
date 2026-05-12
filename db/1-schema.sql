@@ -1,4 +1,5 @@
 CREATE DATABASE menu_dishes;
+CREATE DATABASE tables;
 
 \connect menu_dishes;
 
@@ -39,4 +40,14 @@ CREATE TABLE IF NOT EXISTS user_roles (
     CONSTRAINT check_role CHECK (role IN (
     'MANAGER', 'OBSERVER', 'SERVICE', 'WAITER'
     ))
+);
+
+\connect tables;
+
+CREATE TABLE IF NOT EXISTS tables (
+    id UUID PRIMARY KEY,
+    number INTEGER NOT NULL UNIQUE,
+    capacity INTEGER NOT NULL,
+    CONSTRAINT check_number CHECK (number > 0 AND number < 1000),
+    CONSTRAINT check_capacity CHECK (capacity > 0 AND capacity < 30)
 )
