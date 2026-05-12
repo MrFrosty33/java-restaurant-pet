@@ -1,4 +1,4 @@
-package at.frosty.restaurant.common.menu.model;
+package at.frosty.restaurant.common.security.model;
 
 public enum Role {
     MANAGER, OBSERVER, WAITER, SERVICE;

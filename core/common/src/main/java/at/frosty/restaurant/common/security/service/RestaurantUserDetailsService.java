@@ -1,7 +1,7 @@
-package at.frosty.restaurant.menu.service;
+package at.frosty.restaurant.common.security.service;
 
-import at.frosty.restaurant.common.menu.model.RestaurantUser;
-import at.frosty.restaurant.menu.repository.UserRepository;
+import at.frosty.restaurant.common.security.model.RestaurantUser;
+import at.frosty.restaurant.common.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
