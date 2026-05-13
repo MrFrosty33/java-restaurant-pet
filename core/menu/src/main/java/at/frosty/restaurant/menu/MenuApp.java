@@ -2,7 +2,6 @@ package at.frosty.restaurant.menu;
 
 import at.frosty.restaurant.common.client.auth.AuthClient;
 import at.frosty.restaurant.common.client.auth.ServiceAuthCredentials;
-import at.frosty.restaurant.common.client.menu.MenuClient;
 import at.frosty.restaurant.common.security.service.FeignUserDetailsService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,8 +21,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "at.frosty.restaurant.common.menu.model"
 })
 @EnableFeignClients(basePackageClasses = {
-        AuthClient.class,
-        MenuClient.class
+        AuthClient.class
 })
 @EnableConfigurationProperties(ServiceAuthCredentials.class)
 @Import(FeignUserDetailsService.class)
