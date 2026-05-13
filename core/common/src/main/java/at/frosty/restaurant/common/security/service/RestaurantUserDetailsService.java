@@ -1,14 +1,10 @@
 package at.frosty.restaurant.common.security.service;
 
-import at.frosty.restaurant.common.security.model.RestaurantUser;
-import at.frosty.restaurant.common.security.repository.UserRepository;
+import at.frosty.restaurant.common.security.feign.AuthClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RestaurantUserDetailsService implements UserDetailsService {
     private final String className = this.getClass().getSimpleName();
-    private final UserRepository userRepository;
+    private final AuthClient authClient;
 
     /**
      * Authentication is DB-based.
@@ -26,21 +22,6 @@ public class RestaurantUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        RestaurantUser restaurantUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> {
-                    log.warn("{}: unable to find user with username={}", className, username);
-                    return new UsernameNotFoundException("User with username=" + username + " does not exist");
-                });
-
-        UserDetails result = User.builder()
-                .username(restaurantUser.getUsername())
-                .password(restaurantUser.getPassword())
-                .authorities(restaurantUser.getRoles().stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
-                        .toList())
-                .build();
-
-        log.info("{}: result of loadUserByUsername(username={}): {}", className, username, result);
-        return result;
+        return authClient.getUserByUsername(username);
     }
 }
