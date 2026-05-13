@@ -1,6 +1,6 @@
 package at.frosty.restaurant.menu.security;
 
-import at.frosty.restaurant.common.security.service.RestaurantUserDetailsService;
+import at.frosty.restaurant.common.security.service.FeignUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final RestaurantUserDetailsService restaurantUserDetailsService;
+    private final FeignUserDetailsService feignUserDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -41,7 +41,7 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(restaurantUserDetailsService);
+        provider.setUserDetailsService(feignUserDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }

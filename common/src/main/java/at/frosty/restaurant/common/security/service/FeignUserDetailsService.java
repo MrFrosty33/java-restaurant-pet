@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RestaurantUserDetailsService implements UserDetailsService {
+public class FeignUserDetailsService implements UserDetailsService {
     private final String className = this.getClass().getSimpleName();
     private final AuthClient authClient;
 
