@@ -29,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
                 .roles(entity.getRoles())
                 .build();
 
+        //todo improve credentials log
         log.info("{}: result of getUserByUsername(username={}): {}", className, username, result);
         return result;
     }
