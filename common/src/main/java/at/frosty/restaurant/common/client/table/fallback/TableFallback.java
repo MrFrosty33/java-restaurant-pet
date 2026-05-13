@@ -1,8 +1,8 @@
-package at.frosty.restaurant.common.table.feign.fallback;
+package at.frosty.restaurant.common.client.table.fallback;
 
 import at.frosty.restaurant.common.exception.ErrorType;
 import at.frosty.restaurant.common.exception.ServiceUnavailableException;
-import at.frosty.restaurant.common.table.feign.TableClient;
+import at.frosty.restaurant.common.client.table.TableClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;

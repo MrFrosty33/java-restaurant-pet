@@ -1,6 +1,6 @@
 package at.frosty.restaurant.table.controller;
 
-import at.frosty.restaurant.common.table.feign.TableClient;
+import at.frosty.restaurant.common.client.table.TableClient;
 import at.frosty.restaurant.common.table.model.dto.TableDto;
 import at.frosty.restaurant.table.service.TableService;
 import jakarta.validation.constraints.Max;
