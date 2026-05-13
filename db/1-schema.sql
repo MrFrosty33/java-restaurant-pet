@@ -1,4 +1,5 @@
 CREATE DATABASE menu_dishes;
+CREATE DATABASE auth_users;
 CREATE DATABASE tables;
 
 \connect menu_dishes;
@@ -27,6 +28,8 @@ CREATE TABLE IF NOT EXISTS dish_allergens (
     allergen CHAR NOT NULL,
     PRIMARY KEY (dish_id, allergen)
 );
+
+\connect auth_users;
 
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
