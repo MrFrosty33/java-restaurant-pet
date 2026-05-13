@@ -12,6 +12,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+service-auth-credentials:
+  username: service
+  password: service
+
 logging:
   level:
     at.frosty.restaurant: TRACE
