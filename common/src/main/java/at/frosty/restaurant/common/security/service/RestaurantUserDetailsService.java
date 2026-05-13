@@ -1,8 +1,11 @@
 package at.frosty.restaurant.common.security.service;
 
-import at.frosty.restaurant.common.security.feign.AuthClient;
+import at.frosty.restaurant.common.feign.AuthClient;
+import at.frosty.restaurant.common.security.model.RestaurantUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,13 @@ public class RestaurantUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return authClient.getUserByUsername(username);
+        RestaurantUserDto userDto = authClient.getUserByUsername(username);
+        return User.builder()
+                .username(userDto.getUsername())
+                .password(userDto.getPassword())
+                .authorities(userDto.getRoles().stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                        .toList())
+                .build();
     }
 }
