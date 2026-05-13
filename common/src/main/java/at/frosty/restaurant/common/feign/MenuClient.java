@@ -1,6 +1,6 @@
-package at.frosty.restaurant.common.menu.feign;
+package at.frosty.restaurant.common.feign;
 
-import at.frosty.restaurant.common.menu.feign.fallback.MenuFallback;
+import at.frosty.restaurant.common.feign.fallback.MenuFallback;
 import at.frosty.restaurant.common.menu.model.dto.DishOrderDto;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.cloud.openfeign.FeignClient;
