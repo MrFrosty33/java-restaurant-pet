@@ -1,4 +1,4 @@
-package at.frosty.restaurant.common.feign.config;
+package at.frosty.restaurant.common.client.auth;
 
 import feign.RequestInterceptor;
 import lombok.RequiredArgsConstructor;

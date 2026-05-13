@@ -1,4 +1,4 @@
-package at.frosty.restaurant.common.menu.exception;
+package at.frosty.restaurant.common.exception;
 
 public class CustomException extends RuntimeException implements IncludesErrorType {
     private final ErrorType errorType;

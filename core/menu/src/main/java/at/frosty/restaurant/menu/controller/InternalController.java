@@ -1,6 +1,6 @@
 package at.frosty.restaurant.menu.controller;
 
-import at.frosty.restaurant.common.feign.MenuClient;
+import at.frosty.restaurant.common.client.menu.MenuClient;
 import at.frosty.restaurant.common.menu.model.dto.DishOrderDto;
 import at.frosty.restaurant.menu.service.MenuService;
 import jakarta.validation.constraints.NotNull;

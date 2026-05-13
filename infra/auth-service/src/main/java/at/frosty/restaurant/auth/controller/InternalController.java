@@ -1,8 +1,8 @@
 package at.frosty.restaurant.auth.controller;
 
 import at.frosty.restaurant.auth.service.AuthService;
-import at.frosty.restaurant.common.feign.AuthClient;
-import at.frosty.restaurant.common.security.model.RestaurantUserDto;
+import at.frosty.restaurant.common.client.auth.AuthClient;
+import at.frosty.restaurant.common.security.model.dto.RestaurantUserDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

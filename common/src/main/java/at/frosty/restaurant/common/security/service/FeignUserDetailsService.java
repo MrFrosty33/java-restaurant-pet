@@ -1,7 +1,7 @@
 package at.frosty.restaurant.common.security.service;
 
-import at.frosty.restaurant.common.feign.AuthClient;
-import at.frosty.restaurant.common.security.model.RestaurantUserDto;
+import at.frosty.restaurant.common.client.auth.AuthClient;
+import at.frosty.restaurant.common.security.model.dto.RestaurantUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

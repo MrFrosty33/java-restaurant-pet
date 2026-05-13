@@ -1,10 +1,10 @@
 package at.frosty.restaurant.auth.service;
 
 import at.frosty.restaurant.auth.repository.UserRepository;
-import at.frosty.restaurant.common.menu.exception.ErrorType;
-import at.frosty.restaurant.common.menu.exception.NotFoundException;
+import at.frosty.restaurant.common.exception.ErrorType;
+import at.frosty.restaurant.common.exception.NotFoundException;
 import at.frosty.restaurant.common.security.model.RestaurantUser;
-import at.frosty.restaurant.common.security.model.RestaurantUserDto;
+import at.frosty.restaurant.common.security.model.dto.RestaurantUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package at.frosty.restaurant.common.feign.config;
+package at.frosty.restaurant.common.client.auth;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

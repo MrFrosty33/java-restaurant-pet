@@ -1,4 +1,4 @@
-package at.frosty.restaurant.common.menu.exception;
+package at.frosty.restaurant.common.exception;
 
 public class ConflictException extends CustomException {
     public ConflictException(String message, ErrorType errorType) {
