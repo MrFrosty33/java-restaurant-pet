@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>at.frosty.restaurant</groupId>
-        <artifactId>core</artifactId>
+        <artifactId>java-restaurant-pet</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -16,6 +16,10 @@
         <maven.compiler.source>24</maven.compiler.source>
         <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <lombok.version>1.18.38</lombok.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
+        <openfeign.version>4.1.1</openfeign.version>
     </properties>
 
     <dependencies>
@@ -37,6 +41,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>${openfeign.version}</version>
         </dependency>
 
         <!-- others -->

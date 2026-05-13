@@ -23,11 +23,16 @@
         <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <common-module.version>1.0-SNAPSHOT</common-module.version>
+
         <spring-cloud-dependencies.version>2023.0.1</spring-cloud-dependencies.version>
+
+        <lombok.version>1.18.38</lombok.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- Spring Cloud -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
