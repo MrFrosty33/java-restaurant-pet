@@ -1,4 +1,4 @@
-package at.frosty.restaurant.menu.configuration;
+package at.frosty.restaurant.menu.security;
 
 import at.frosty.restaurant.common.security.service.RestaurantUserDetailsService;
 import lombok.RequiredArgsConstructor;
