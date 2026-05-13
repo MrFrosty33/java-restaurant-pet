@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TableRepository extends JpaRepository<Table, UUID> {
-    List<Table> findByCapacityGreaterThanEquals(int capacity);
+    List<Table> findByCapacityGreaterThanEqual(int capacity);
 }
