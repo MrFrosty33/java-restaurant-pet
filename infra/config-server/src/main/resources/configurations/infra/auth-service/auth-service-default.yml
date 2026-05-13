@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:6767/menu_dishes
+    url: jdbc:postgresql://localhost:6767/auth_users
     username: frosty
     password: restaurant
   sql:
@@ -11,10 +11,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-service-auth-credentials:
-  username: service
-  password: service
 
 logging:
   level:

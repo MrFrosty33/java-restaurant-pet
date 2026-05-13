@@ -5,16 +5,20 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>at.frosty.restaurant</groupId>
-        <artifactId>core</artifactId>
+        <artifactId>infra</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>menu</artifactId>
+    <artifactId>auth-service</artifactId>
 
     <properties>
         <maven.compiler.source>24</maven.compiler.source>
         <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <common-module.version>1.0-SNAPSHOT</common-module.version>
+
+        <lombok.version>1.18.38</lombok.version>
     </properties>
 
     <dependencies>
@@ -22,6 +26,7 @@
         <dependency>
             <groupId>at.frosty.restaurant</groupId>
             <artifactId>common</artifactId>
+            <version>${common-module.version}</version>
         </dependency>
 
         <!-- Spring Boot -->
@@ -71,6 +76,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
         </dependency>
     </dependencies>
 
@@ -89,11 +95,6 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>${lombok.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

@@ -1,10 +1,10 @@
 package at.frosty.restaurant.menu.service;
 
-import at.frosty.restaurant.common.menu.exception.ConflictException;
-import at.frosty.restaurant.common.menu.exception.ErrorType;
-import at.frosty.restaurant.common.menu.exception.ForbiddenException;
-import at.frosty.restaurant.common.menu.exception.InternalServerException;
-import at.frosty.restaurant.common.menu.exception.NotFoundException;
+import at.frosty.restaurant.common.exception.ConflictException;
+import at.frosty.restaurant.common.exception.ErrorType;
+import at.frosty.restaurant.common.exception.ForbiddenException;
+import at.frosty.restaurant.common.exception.InternalServerException;
+import at.frosty.restaurant.common.exception.NotFoundException;
 import at.frosty.restaurant.common.menu.model.Category;
 import at.frosty.restaurant.common.menu.model.Dish;
 import at.frosty.restaurant.common.menu.model.dto.DishDto;
