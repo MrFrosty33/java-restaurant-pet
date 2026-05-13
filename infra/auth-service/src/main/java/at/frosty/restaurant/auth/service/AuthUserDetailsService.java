@@ -1,6 +1,5 @@
 package at.frosty.restaurant.auth.service;
 
-import at.frosty.restaurant.common.feign.AuthClient;
 import at.frosty.restaurant.common.security.model.RestaurantUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthUserDetailsService implements UserDetailsService {
     private final String className = this.getClass().getSimpleName();
-    private final AuthClient authClient;
+    private final AuthServiceImpl service;
 
     /**
      * Authentication is DB-based.
@@ -25,7 +24,7 @@ public class AuthUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        RestaurantUserDto userDto = authClient.getUserByUsername(username);
+        RestaurantUserDto userDto = service.getUserByUsername(username);
         return User.builder()
                 .username(userDto.getUsername())
                 .password(userDto.getPassword())
