@@ -43,7 +43,7 @@ public class InternalController implements TableClient {
         return service.getTableByUuid(uuid);
     }
 
-    @GetMapping
+    @GetMapping(params = "capacity")
     @ResponseStatus(HttpStatus.OK)
     public List<TableDto> getAllTablesWithCapacity(@RequestParam @Positive @Max(30) int capacity) {
         log.info("{}: received getAllTablesWithCapacity(capacity={}) call", className, capacity);
