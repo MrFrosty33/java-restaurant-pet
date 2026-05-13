@@ -6,9 +6,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Positive;
+import lombok.Data;
 
 import java.util.UUID;
 
+@Data
 @Entity
 @jakarta.persistence.Table(name = "tables")
 public class Table {

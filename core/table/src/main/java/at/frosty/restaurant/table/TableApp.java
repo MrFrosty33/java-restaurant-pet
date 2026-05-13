@@ -2,7 +2,6 @@ package at.frosty.restaurant.table;
 
 import at.frosty.restaurant.common.client.auth.AuthClient;
 import at.frosty.restaurant.common.client.auth.ServiceAuthCredentials;
-import at.frosty.restaurant.common.client.menu.MenuClient;
 import at.frosty.restaurant.common.security.service.FeignUserDetailsService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
