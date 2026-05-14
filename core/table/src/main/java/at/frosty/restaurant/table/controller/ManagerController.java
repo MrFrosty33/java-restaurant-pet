@@ -55,7 +55,7 @@ public class ManagerController {
         return service.createTable(tableDto);
     }
 
-    @PatchMapping("{/id}")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public TableDto updateTable(@PathVariable @NotNull UUID id,
                                 @RequestBody @Valid @NotNull UpdateTableDto updateTableDto) {
