@@ -58,25 +58,25 @@ public class ManagerController {
         return service.createDish(dishDto);
     }
 
-    @PatchMapping("/{uuid}")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public DishDto updateDish(@PathVariable @NotNull UUID uuid,
+    public DishDto updateDish(@PathVariable UUID id,
                               @RequestBody @Valid @NotNull UpdateDishDto updateDishDto) {
-        log.info("{}: received updateDish(uuid={}, updateDishDto={}) call", className, uuid, updateDishDto);
-        return service.updateDish(uuid, updateDishDto);
+        log.info("{}: received updateDish(id={}, updateDishDto={}) call", className, id, updateDishDto);
+        return service.updateDish(id, updateDishDto);
     }
 
-    @PatchMapping("/{uuid}/activate")
+    @PatchMapping("/{id}/activate")
     @ResponseStatus(HttpStatus.OK)
-    public DishDto activateDish(@PathVariable @NotNull UUID uuid) {
-        log.info("{}: received activateDish(uuid={}) call", className, uuid);
-        return service.activateDish(uuid);
+    public DishDto activateDish(@PathVariable UUID id) {
+        log.info("{}: received activateDish(id={}) call", className, id);
+        return service.activateDish(id);
     }
 
-    @DeleteMapping("/{uuid}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void softDeleteDish(@PathVariable @NotNull UUID uuid) {
-        log.info("{}: received softDeleteDish(uuid={}) call", className, uuid);
-        service.softDeleteDish(uuid);
+    public void softDeleteDish(@PathVariable UUID id) {
+        log.info("{}: received softDeleteDish(id={}) call", className, id);
+        service.softDeleteDish(id);
     }
 }

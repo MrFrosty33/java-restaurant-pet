@@ -12,8 +12,8 @@
     <artifactId>core</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>common</module>
         <module>menu</module>
+        <module>table</module>
     </modules>
 
     <properties>
@@ -21,13 +21,23 @@
         <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <common-module.version>1.0-SNAPSHOT</common-module.version>
+
         <spring-cloud-dependencies.version>2023.0.1</spring-cloud-dependencies.version>
+
         <lombok.version>1.18.38</lombok.version>
         <mapstruct.version>1.6.3</mapstruct.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- my own modules -->
+            <dependency>
+                <groupId>at.frosty.restaurant</groupId>
+                <artifactId>common</artifactId>
+                <version>${common-module.version}</version>
+            </dependency>
+
             <!-- Spring Cloud -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
