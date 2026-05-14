@@ -55,11 +55,12 @@ public class ManagerController {
         return service.createTable(tableDto);
     }
 
-    @PatchMapping
+    @PatchMapping("{/uuid}")
     @ResponseStatus(HttpStatus.OK)
-    public TableDto updateTable(@RequestBody @Valid @NotNull UpdateTableDto updateTableDto) {
-        log.info("{}: received updateTable(updateTableDto={}) call", className, updateTableDto);
-        return service.updateTable(updateTableDto);
+    public TableDto updateTable(@PathVariable @NotNull UUID uuid,
+                                @RequestBody @Valid @NotNull UpdateTableDto updateTableDto) {
+        log.info("{}: received updateTable(uuid={}, updateTableDto={}) call", className, uuid, updateTableDto);
+        return service.updateTable(uuid, updateTableDto);
     }
 
     @DeleteMapping("/{uuid}")

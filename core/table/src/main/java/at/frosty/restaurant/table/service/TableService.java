@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface TableService {
     // manager methods
     TableDto createTable(TableDto tableDto);
-    TableDto updateTable(UpdateTableDto updateTableDto);
+    TableDto updateTable(UUID uuid, UpdateTableDto updateTableDto);
     void deleteTable(UUID uuid);
 
     // internal methods
