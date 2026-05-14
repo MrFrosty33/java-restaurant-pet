@@ -1,5 +1,6 @@
 CREATE DATABASE menu_dishes;
 CREATE DATABASE auth_users;
+CREATE DATABASE tables;
 
 \connect menu_dishes;
 
@@ -32,7 +33,7 @@ CREATE TABLE IF NOT EXISTS dish_allergens (
 
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    username VARCHAR(150) NOT NULL,
+    username VARCHAR(150) UNIQUE NOT NULL,
     password VARCHAR(150) NOT NULL
 );
 
@@ -42,4 +43,14 @@ CREATE TABLE IF NOT EXISTS user_roles (
     CONSTRAINT check_role CHECK (role IN (
     'MANAGER', 'OBSERVER', 'SERVICE', 'WAITER'
     ))
+);
+
+\connect tables;
+
+CREATE TABLE IF NOT EXISTS tables (
+    id UUID PRIMARY KEY,
+    number INTEGER NOT NULL UNIQUE,
+    capacity INTEGER NOT NULL,
+    CONSTRAINT check_number CHECK (number > 0 AND number <= 1000),
+    CONSTRAINT check_capacity CHECK (capacity > 0 AND capacity <= 30)
 )

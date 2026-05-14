@@ -1,4 +1,4 @@
-package at.frosty.restaurant.common.client.menu;
+package at.frosty.restaurant.common.client.table;
 
 import at.frosty.restaurant.common.exception.ErrorType;
 import at.frosty.restaurant.common.exception.ServiceUnavailableException;
@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class MenuFallback implements FallbackFactory<MenuClient> {
+public class TableFallback implements FallbackFactory<TableClient> {
     private final String className = this.getClass().getSimpleName();
 
     @Override
-    public MenuClient create(Throwable cause) {
+    public TableClient create(Throwable cause) {
         return id -> {
-            log.error("{}: getDishOrderById(id={}) failure", className, id, cause);
-            throw new ServiceUnavailableException("menu-service unavailable", ErrorType.SERVICE_UNAVAILABLE);
+            log.error("{}: getTableById(id={}) failure", className, id, cause);
+            throw new ServiceUnavailableException("table-service unavailable", ErrorType.SERVICE_UNAVAILABLE);
         };
     }
 }

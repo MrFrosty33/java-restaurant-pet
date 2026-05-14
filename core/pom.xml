@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>menu</module>
+        <module>table</module>
     </modules>
 
     <properties>

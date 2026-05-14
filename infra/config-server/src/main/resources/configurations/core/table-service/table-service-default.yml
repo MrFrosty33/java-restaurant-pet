@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:6767/menu_dishes
+    url: jdbc:postgresql://localhost:6767/tables
     username: frosty
     password: restaurant
   sql:
@@ -21,8 +21,6 @@ logging:
     at.frosty.restaurant: TRACE
     #org.springframework.security: DEBUG
 
-#todo подумать над эндпоинтами в дальнейшем, в других конфигах.
-# гпт ругается на httptrace в проде
 management:
   endpoints:
     web:

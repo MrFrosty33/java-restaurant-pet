@@ -10,6 +10,6 @@ import java.util.UUID;
 
 @FeignClient(name = "menu-service", fallbackFactory = MenuFallback.class)
 public interface MenuClient {
-    @GetMapping("/internal/menu/{uuid}")
-    DishOrderDto getDishOrderByUuid(@PathVariable @NotNull UUID uuid);
+    @GetMapping("/internal/menu/{id}")
+    DishOrderDto getDishOrderById(@PathVariable UUID id);
 }

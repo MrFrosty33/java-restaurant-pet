@@ -1,4 +1,4 @@
-package at.frosty.restaurant.menu.exception;
+package at.frosty.restaurant.table.exception;
 
 import at.frosty.restaurant.common.exception.ConflictException;
 import at.frosty.restaurant.common.exception.ErrorMessage;
@@ -6,8 +6,6 @@ import at.frosty.restaurant.common.exception.ErrorType;
 import at.frosty.restaurant.common.exception.ForbiddenException;
 import at.frosty.restaurant.common.exception.IncludesErrorType;
 import at.frosty.restaurant.common.exception.NotFoundException;
-import at.frosty.restaurant.common.exception.ServiceUnavailableException;
-import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +22,7 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @RestControllerAdvice
-public class MenuExceptionHandler {
+public class TableExceptionHandler {
     private final String className = this.getClass().getSimpleName();
 
     // custom Exceptions
@@ -44,7 +42,7 @@ public class MenuExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorMessage handleDishNotFound(NotFoundException e, HttpServletRequest request) {
+    public ErrorMessage handleNotFound(NotFoundException e, HttpServletRequest request) {
         writeLog(e);
         return ErrorMessage.builder()
                 .message(e.getMessage())
@@ -63,19 +61,6 @@ public class MenuExceptionHandler {
                 .message(e.getMessage())
                 .errorType(e.getErrorType())
                 .status(HttpStatus.FORBIDDEN)
-                .apiPath(request.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
-
-    @ExceptionHandler(ServiceUnavailableException.class)
-    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    public ErrorMessage handleServiceUnavailable(ServiceUnavailableException e, HttpServletRequest request) {
-        writeLog(e);
-        return ErrorMessage.builder()
-                .message(e.getMessage())
-                .errorType(e.getErrorType())
-                .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .apiPath(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -163,34 +148,6 @@ public class MenuExceptionHandler {
                 .build();
     }
 
-    // feign Exceptions
-
-    @ExceptionHandler(FeignException.ServiceUnavailable.class)
-    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    public ErrorMessage handleFeignServiceUnavailable(FeignException.ServiceUnavailable e, HttpServletRequest request) {
-        writeLog(e);
-        return ErrorMessage.builder()
-                .message(e.getMessage())
-                .errorType(ErrorType.SERVICE_UNAVAILABLE)
-                .status(HttpStatus.SERVICE_UNAVAILABLE)
-                .apiPath(request.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
-
-    @ExceptionHandler(FeignException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorMessage handleFeign(FeignException e, HttpServletRequest request) {
-        writeLog(e);
-        return ErrorMessage.builder()
-                .message(e.getMessage())
-                .errorType(ErrorType.INTERNAL_ERROR)
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .apiPath(request.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
-
 
     private void writeLog(Exception ex) {
         ErrorType errorType;
@@ -200,7 +157,6 @@ public class MenuExceptionHandler {
         else if (ex instanceof MethodArgumentNotValidException) errorType = ErrorType.VALIDATION_ERROR;
         else if (ex instanceof MethodArgumentTypeMismatchException) errorType = ErrorType.VALIDATION_ERROR;
         else if (ex instanceof HttpMessageNotReadableException) errorType = ErrorType.VALIDATION_ERROR;
-        else if (ex instanceof FeignException.ServiceUnavailable) errorType = ErrorType.SERVICE_UNAVAILABLE;
         else errorType = ErrorType.INTERNAL_ERROR;
 
         log.warn("{}: caught {} with errorType={}. message={}", className,
