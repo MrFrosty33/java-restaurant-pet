@@ -5,7 +5,7 @@ import at.frosty.restaurant.common.menu.model.dto.DishDto;
 import at.frosty.restaurant.menu.enums.DishSearchType;
 import at.frosty.restaurant.menu.enums.DishSortType;
 import at.frosty.restaurant.menu.service.MenuService;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
@@ -40,7 +40,7 @@ public class PublicController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<DishDto> getAllDishes(@RequestParam(required = false) Category category,
-                                @RequestParam(defaultValue = "NAME") DishSortType sortBy) {
+                                      @RequestParam(defaultValue = "NAME") DishSortType sortBy) {
         log.info("{}: received getAllDishes(category={}, sortBy={}) call", className, category, sortBy);
 
         if (category != null) {
@@ -54,8 +54,8 @@ public class PublicController {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<DishDto> searchDishes(@RequestParam @NotNull @Length(min = 1, max = 150) String query,
-                                @RequestParam(defaultValue = "NAME") DishSearchType type) {
+    public List<DishDto> searchDishes(@RequestParam @NotBlank @Length(min = 1, max = 150) String query,
+                                      @RequestParam(defaultValue = "NAME") DishSearchType type) {
         // when adding new DishSearchType change max length constraint
         log.info("{}: received searchDishes(query={}, type={}) call", className, query, type);
         return service.searchDishes(query, type);
