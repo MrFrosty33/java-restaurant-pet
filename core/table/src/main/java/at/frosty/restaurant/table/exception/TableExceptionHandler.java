@@ -7,6 +7,7 @@ import at.frosty.restaurant.common.exception.ForbiddenException;
 import at.frosty.restaurant.common.exception.IncludesErrorType;
 import at.frosty.restaurant.common.exception.NotFoundException;
 import at.frosty.restaurant.common.exception.ServiceUnavailableException;
+import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,8 @@ import java.time.LocalDateTime;
 public class TableExceptionHandler {
     private final String className = this.getClass().getSimpleName();
 
+    // custom Exceptions
+
     @ExceptionHandler(ConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorMessage handleConflict(ConflictException e, HttpServletRequest request) {
@@ -39,7 +42,7 @@ public class TableExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorMessage handleDishNotFound(NotFoundException e, HttpServletRequest request) {
+    public ErrorMessage handleNotFound(NotFoundException e, HttpServletRequest request) {
         writeLog(e);
         return ErrorMessage.builder()
                 .message(e.getMessage())
@@ -63,35 +66,24 @@ public class TableExceptionHandler {
                 .build();
     }
 
-    @ExceptionHandler(ServiceUnavailableException.class)
-    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    public ErrorMessage handleServiceUnavailable(ServiceUnavailableException e, HttpServletRequest request) {
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorMessage handleOthers(Exception e, HttpServletRequest request) {
         writeLog(e);
         return ErrorMessage.builder()
                 .message(e.getMessage())
-                .errorType(e.getErrorType())
-                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .errorType(ErrorType.INTERNAL_ERROR)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .apiPath(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+
+    // spring Exceptions
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleMissingServletRequestParameter(MissingServletRequestParameterException e, HttpServletRequest request) {
-        writeLog(e);
-        return ErrorMessage.builder()
-                .message(e.getMessage())
-                .errorType(ErrorType.VALIDATION_ERROR)
-                .status(HttpStatus.BAD_REQUEST)
-                .apiPath(request.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleConstraintViolation(ConstraintViolationException e, HttpServletRequest request) {
         writeLog(e);
         return ErrorMessage.builder()
                 .message(e.getMessage())
@@ -115,18 +107,21 @@ public class TableExceptionHandler {
                 .build();
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorMessage handleOthers(Exception e, HttpServletRequest request) {
+    // jakarta Exceptions
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleConstraintViolation(ConstraintViolationException e, HttpServletRequest request) {
         writeLog(e);
         return ErrorMessage.builder()
                 .message(e.getMessage())
-                .errorType(ErrorType.INTERNAL_ERROR)
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .errorType(ErrorType.VALIDATION_ERROR)
+                .status(HttpStatus.BAD_REQUEST)
                 .apiPath(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+
 
     private void writeLog(Exception ex) {
         ErrorType errorType;
