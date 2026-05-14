@@ -42,7 +42,7 @@ public class ManagerController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TableDto getTableById(@PathVariable @NotNull UUID id) {
+    public TableDto getTableById(@PathVariable UUID id) {
         log.info("{}: received getTableByUuid(id={}) call", className, id);
         return service.getTableById(id);
     }
@@ -56,7 +56,7 @@ public class ManagerController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TableDto updateTable(@PathVariable @NotNull UUID id,
+    public TableDto updateTable(@PathVariable UUID id,
                                 @RequestBody @Valid @NotNull UpdateTableDto updateTableDto) {
         log.info("{}: received updateTable(id={}, updateTableDto={}) call", className, id, updateTableDto);
         return service.updateTable(id, updateTableDto);
@@ -64,7 +64,7 @@ public class ManagerController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTable(@PathVariable @NotNull UUID id) {
+    public void deleteTable(@PathVariable UUID id) {
         log.info("{}: received deleteTable(id={}) call", className, id);
         service.deleteTable(id);
     }

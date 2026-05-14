@@ -3,7 +3,6 @@ package at.frosty.restaurant.menu.controller;
 import at.frosty.restaurant.common.client.menu.MenuClient;
 import at.frosty.restaurant.common.menu.model.dto.DishOrderDto;
 import at.frosty.restaurant.menu.service.MenuService;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +23,7 @@ public class InternalController implements MenuClient {
     private final MenuService service;
 
     @GetMapping("/{id}")
-    public DishOrderDto getDishOrderById(@PathVariable @NotNull UUID uuid) {
+    public DishOrderDto getDishOrderById(@PathVariable UUID uuid) {
         log.info("{}: received getDishOrderById(id={}) call", className, uuid);
         return service.getDishOrderById(uuid);
     }

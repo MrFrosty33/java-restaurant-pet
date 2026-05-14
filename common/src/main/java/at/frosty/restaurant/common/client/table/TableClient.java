@@ -9,5 +9,5 @@ import java.util.UUID;
 
 public interface TableClient {
     @GetMapping("/internal/table/{id}")
-    TableDto getTableById(@PathVariable @NotNull UUID id);
+    TableDto getTableById(@PathVariable UUID id);
 }

@@ -38,7 +38,7 @@ public class InternalController implements TableClient {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TableDto getTableById(@PathVariable @NotNull UUID id) {
+    public TableDto getTableById(@PathVariable UUID id) {
         log.info("{}: received getTableByUuid(id={}) call", className, id);
         return service.getTableById(id);
     }

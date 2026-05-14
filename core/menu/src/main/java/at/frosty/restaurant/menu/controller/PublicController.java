@@ -32,7 +32,7 @@ public class PublicController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public DishDto getDishById(@PathVariable @NotNull UUID id) {
+    public DishDto getDishById(@PathVariable UUID id) {
         log.info("{}: received getDishByUuid(id={}) call", className, id);
         return service.getDishById(id);
     }
