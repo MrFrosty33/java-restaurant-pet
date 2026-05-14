@@ -45,12 +45,12 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public DishDto getDishByUuid(UUID uuid) {
-        DishDto result = dishMapper.toDto(getDishEntity(uuid));
+    public DishDto getDishById(UUID id) {
+        DishDto result = dishMapper.toDto(getDishEntity(id));
 
         if (!result.isActive()) {
             log.warn("{}: getByUuid() attempt to receive disabled dish", className);
-            throw new ForbiddenException("dish with uuid=" + uuid + " is deactivated", ErrorType.DISH_DEACTIVATED);
+            throw new ForbiddenException("dish with uuid=" + id + " is deactivated", ErrorType.DISH_DEACTIVATED);
         }
 
         log.info("{}: getByUuid() result={}", className, result);
@@ -148,12 +148,12 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public DishOrderDto getDishOrderByUuid(UUID uuid) {
-        Dish entity = getDishEntity(uuid);
+    public DishOrderDto getDishOrderById(UUID id) {
+        Dish entity = getDishEntity(id);
 
         if(!entity.isActive()) {
-            log.warn("{}: getDishOrderByUuid() unable to find active dish with uuid={}", className, uuid);
-            throw new NotFoundException("dish with uuid=" + uuid + " either not exists or is deactivated", ErrorType.DISH_NOT_FOUND);
+            log.warn("{}: getDishOrderByUuid() unable to find active dish with uuid={}", className, id);
+            throw new NotFoundException("dish with uuid=" + id + " either not exists or is deactivated", ErrorType.DISH_NOT_FOUND);
         }
 
         return dishMapper.toOrderDto(entity);
@@ -178,15 +178,15 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional
-    public DishDto updateDish(UUID uuid, UpdateDishDto updateDishDto) {
-        Dish entity = getDishEntity(uuid);
+    public DishDto updateDish(UUID id, UpdateDishDto updateDishDto) {
+        Dish entity = getDishEntity(id);
 
         if (updateDishDto.getName() != null) {
             dishRepository.findByNameIgnoreCase(updateDishDto.getName())
-                    .filter(d -> !d.getId().equals(uuid))
+                    .filter(d -> !d.getId().equals(id))
                     .ifPresent(d -> {
                         log.warn("{}: updateDish(uuid={}, updateDishDto={}) refused, dish with name={} already exists",
-                                className, uuid, updateDishDto, updateDishDto.getName());
+                                className, id, updateDishDto, updateDishDto.getName());
                         throw new ConflictException("dish with name=" + updateDishDto.getName() + " already exists", ErrorType.DISH_ALREADY_EXISTS);
                     });
         }
@@ -200,13 +200,13 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional
-    public DishDto activateDish(UUID uuid) {
-        Dish entity = getDishEntity(uuid);
+    public DishDto activateDish(UUID id) {
+        Dish entity = getDishEntity(id);
 
         if(entity.isActive()) {
             log.warn("{}: activateDish() refused, dish already activated",
                     className);
-            throw new ConflictException("dish with uuid=" + uuid + " already activated", ErrorType.DISH_ALREADY_ACTIVATED);
+            throw new ConflictException("dish with uuid=" + id + " already activated", ErrorType.DISH_ALREADY_ACTIVATED);
         }
 
         entity.setActive(true);
@@ -218,13 +218,13 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional
-    public void softDeleteDish(UUID uuid) {
-        Dish entity = getDishEntity(uuid);
+    public void softDeleteDish(UUID id) {
+        Dish entity = getDishEntity(id);
 
         if(!entity.isActive()) {
             log.warn("{}: softDeleteDish() refused, dish already deactivated",
                     className);
-            throw new ConflictException("dish with uuid=" + uuid + " already deactivated", ErrorType.DISH_ALREADY_DEACTIVATED);
+            throw new ConflictException("dish with uuid=" + id + " already deactivated", ErrorType.DISH_ALREADY_DEACTIVATED);
         }
 
         entity.setActive(false);

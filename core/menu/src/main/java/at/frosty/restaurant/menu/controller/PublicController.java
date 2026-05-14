@@ -30,11 +30,11 @@ public class PublicController {
     private final String className = this.getClass().getSimpleName();
     private final MenuService service;
 
-    @GetMapping("/{uuid}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public DishDto getDishByUuid(@PathVariable @NotNull UUID uuid) {
-        log.info("{}: received getDishByUuid(uuid={}) call", className, uuid);
-        return service.getDishByUuid(uuid);
+    public DishDto getDishById(@PathVariable @NotNull UUID id) {
+        log.info("{}: received getDishByUuid(id={}) call", className, id);
+        return service.getDishById(id);
     }
 
     @GetMapping

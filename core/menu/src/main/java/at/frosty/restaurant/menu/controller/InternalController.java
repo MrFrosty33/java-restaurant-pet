@@ -23,9 +23,9 @@ public class InternalController implements MenuClient {
     private final String className = this.getClass().getSimpleName();
     private final MenuService service;
 
-    @GetMapping("/{uuid}")
-    public DishOrderDto getDishOrderByUuid(@PathVariable @NotNull UUID uuid) {
-        log.info("{}: received getDishOrderByUuid(uuid={}) call", className, uuid);
-        return service.getDishOrderByUuid(uuid);
+    @GetMapping("/{id}")
+    public DishOrderDto getDishOrderById(@PathVariable @NotNull UUID uuid) {
+        log.info("{}: received getDishOrderById(id={}) call", className, uuid);
+        return service.getDishOrderById(uuid);
     }
 }

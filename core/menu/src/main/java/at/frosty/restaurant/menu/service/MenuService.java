@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface MenuService {
     // public methods
-    DishDto getDishByUuid(UUID uuid);
+    DishDto getDishById(UUID id);
     List<DishDto> getAllDishesSorted(DishSortType sortBy);
     List<DishDto> getDishesByCategory(Category category, DishSortType sortBy);
     List<DishDto> searchDishes(String query, DishSearchType type);
@@ -21,10 +21,10 @@ public interface MenuService {
     List<DishDto> getDeactivatedDishesSorted(DishSortType sortBy);
     List<DishDto> getDeactivatedDishesByCategory(Category category, DishSortType sortBy);
     DishDto createDish(DishDto dishDto);
-    DishDto updateDish(UUID uuid, UpdateDishDto updateDishDto);
-    DishDto activateDish(UUID uuid);
-    void softDeleteDish(UUID uuid);
+    DishDto updateDish(UUID id, UpdateDishDto updateDishDto);
+    DishDto activateDish(UUID id);
+    void softDeleteDish(UUID id);
 
     //internal methods
-    DishOrderDto getDishOrderByUuid(UUID uuid);
+    DishOrderDto getDishOrderById(UUID id);
 }

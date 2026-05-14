@@ -13,8 +13,8 @@ public class MenuFallback implements FallbackFactory<MenuClient> {
 
     @Override
     public MenuClient create(Throwable cause) {
-        return uuid -> {
-            log.error("{}: getDishOrderByUuid(uuid={}) failure", className, uuid, cause);
+        return id -> {
+            log.error("{}: getDishOrderById(id={}) failure", className, id, cause);
             throw new ServiceUnavailableException("menu-service unavailable", ErrorType.SERVICE_UNAVAILABLE);
         };
     }
