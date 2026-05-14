@@ -1,8 +1,7 @@
-package at.frosty.restaurant.common.client.table.fallback;
+package at.frosty.restaurant.common.client.table;
 
 import at.frosty.restaurant.common.exception.ErrorType;
 import at.frosty.restaurant.common.exception.ServiceUnavailableException;
-import at.frosty.restaurant.common.client.table.TableClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -14,8 +13,8 @@ public class TableFallback implements FallbackFactory<TableClient> {
 
     @Override
     public TableClient create(Throwable cause) {
-        return uuid -> {
-            log.error("{}: getTableByUuid(uuid={}) failure", className, uuid, cause);
+        return id -> {
+            log.error("{}: getTableById(id={}) failure", className, id, cause);
             throw new ServiceUnavailableException("table-service unavailable", ErrorType.SERVICE_UNAVAILABLE);
         };
     }

@@ -36,11 +36,11 @@ public class InternalController implements TableClient {
         return service.getAllTables();
     }
 
-    @GetMapping("/{uuid}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TableDto getTableByUuid(@PathVariable @NotNull UUID uuid) {
-        log.info("{}: received getTableByUuid(uuid={}) call", className, uuid);
-        return service.getTableByUuid(uuid);
+    public TableDto getTableById(@PathVariable @NotNull UUID id) {
+        log.info("{}: received getTableByUuid(id={}) call", className, id);
+        return service.getTableById(id);
     }
 
     @GetMapping(params = "capacity")

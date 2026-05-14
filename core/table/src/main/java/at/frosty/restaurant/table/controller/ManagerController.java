@@ -41,11 +41,11 @@ public class ManagerController {
         return service.getAllTables();
     }
 
-    @GetMapping("/{uuid}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TableDto getTableByUuid(@PathVariable @NotNull UUID uuid) {
-        log.info("{}: received getTableByUuid(uuid={}) call", className, uuid);
-        return service.getTableByUuid(uuid);
+    public TableDto getTableById(@PathVariable @NotNull UUID id) {
+        log.info("{}: received getTableByUuid(id={}) call", className, id);
+        return service.getTableById(id);
     }
 
     @PostMapping
@@ -55,18 +55,18 @@ public class ManagerController {
         return service.createTable(tableDto);
     }
 
-    @PatchMapping("{/uuid}")
+    @PatchMapping("{/id}")
     @ResponseStatus(HttpStatus.OK)
-    public TableDto updateTable(@PathVariable @NotNull UUID uuid,
+    public TableDto updateTable(@PathVariable @NotNull UUID id,
                                 @RequestBody @Valid @NotNull UpdateTableDto updateTableDto) {
-        log.info("{}: received updateTable(uuid={}, updateTableDto={}) call", className, uuid, updateTableDto);
-        return service.updateTable(uuid, updateTableDto);
+        log.info("{}: received updateTable(id={}, updateTableDto={}) call", className, id, updateTableDto);
+        return service.updateTable(id, updateTableDto);
     }
 
-    @DeleteMapping("/{uuid}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTable(@RequestParam UUID uuid) {
-        log.info("{}: received deleteTable(uuid={}) call", className, uuid);
-        service.deleteTable(uuid);
+    public void deleteTable(@RequestParam UUID id) {
+        log.info("{}: received deleteTable(id={}) call", className, id);
+        service.deleteTable(id);
     }
 }

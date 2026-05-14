@@ -35,10 +35,10 @@ public class TableServiceImpl implements TableService {
         }
     }
 
-    private Table getTableEntity(UUID uuid) {
-        return tableRepository.findById(uuid).orElseThrow(() -> {
-            log.warn("{}: unable to find table with uuid={}", className, uuid);
-            return new NotFoundException("table with uuid=" + uuid + " not found", ErrorType.TABLE_NOT_FOUND);
+    private Table getTableEntity(UUID id) {
+        return tableRepository.findById(id).orElseThrow(() -> {
+            log.warn("{}: unable to find table with id={}", className, id);
+            return new NotFoundException("table with id=" + id + " not found", ErrorType.TABLE_NOT_FOUND);
         });
     }
 
@@ -57,8 +57,8 @@ public class TableServiceImpl implements TableService {
 
     @Override
     @Transactional
-    public TableDto updateTable(UUID uuid, UpdateTableDto updateTableDto) {
-        Table entity = getTableEntity(uuid);
+    public TableDto updateTable(UUID id, UpdateTableDto updateTableDto) {
+        Table entity = getTableEntity(id);
         if(updateTableDto.getNumber() != entity.getNumber()) {
             validateTableNumberNotOccupied(updateTableDto.getNumber(), "updateTable()");
         }
@@ -72,10 +72,10 @@ public class TableServiceImpl implements TableService {
 
     @Override
     @Transactional
-    public void deleteTable(UUID uuid) {
-        Table entity = getTableEntity(uuid);
+    public void deleteTable(UUID id) {
+        Table entity = getTableEntity(id);
         tableRepository.delete(entity);
-        log.info("{}: table with uuid={} was deleted", className, uuid);
+        log.info("{}: table with id={} was deleted", className, id);
     }
 
     @Override
@@ -95,9 +95,9 @@ public class TableServiceImpl implements TableService {
     }
 
     @Override
-    public TableDto getTableByUuid(UUID uuid) {
-        TableDto result = tableMapper.toDto(getTableEntity(uuid));
-        log.info("{}: getTableByUuid() result={}", className, result);
+    public TableDto getTableById(UUID id) {
+        TableDto result = tableMapper.toDto(getTableEntity(id));
+        log.info("{}: getTableById() result={}", className, result);
         return result;
     }
 

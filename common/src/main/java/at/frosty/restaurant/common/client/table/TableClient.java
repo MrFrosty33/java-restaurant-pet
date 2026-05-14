@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.UUID;
 
 public interface TableClient {
-    @GetMapping("/internal/table/{uuid}")
-    TableDto getTableByUuid(@PathVariable @NotNull UUID uuid);
+    @GetMapping("/internal/table/{id}")
+    TableDto getTableById(@PathVariable @NotNull UUID id);
 }
