@@ -8,10 +8,12 @@ import at.frosty.restaurant.common.security.model.dto.RestaurantUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService {
     private final String className = this.getClass().getSimpleName();
     private final UserRepository userRepository;

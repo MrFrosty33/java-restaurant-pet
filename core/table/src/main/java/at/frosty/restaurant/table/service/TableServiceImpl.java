@@ -20,6 +20,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TableServiceImpl implements TableService {
     private final String className = this.getClass().getSimpleName();
     private final TableRepository tableRepository;
@@ -59,7 +60,7 @@ public class TableServiceImpl implements TableService {
     @Transactional
     public TableDto updateTable(UUID id, UpdateTableDto updateTableDto) {
         Table entity = getTableEntity(id);
-        if(updateTableDto.getNumber() != entity.getNumber()) {
+        if (updateTableDto.getNumber() != entity.getNumber()) {
             validateTableNumberNotOccupied(updateTableDto.getNumber(), "updateTable()");
         }
 

@@ -27,6 +27,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MenuServiceImpl implements MenuService {
     private final String className = this.getClass().getSimpleName();
     private final DishRepository dishRepository;
