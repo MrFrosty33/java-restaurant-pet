@@ -51,6 +51,6 @@ CREATE TABLE IF NOT EXISTS tables (
     id UUID PRIMARY KEY,
     number INTEGER NOT NULL UNIQUE,
     capacity INTEGER NOT NULL,
-    CONSTRAINT check_number CHECK (number > 0 AND number < 1000),
-    CONSTRAINT check_capacity CHECK (capacity > 0 AND capacity < 30)
+    CONSTRAINT check_number CHECK (number > 0 AND number <= 1000),
+    CONSTRAINT check_capacity CHECK (capacity > 0 AND capacity <= 30)
 )
