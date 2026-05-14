@@ -6,8 +6,6 @@ import at.frosty.restaurant.common.exception.ErrorType;
 import at.frosty.restaurant.common.exception.ForbiddenException;
 import at.frosty.restaurant.common.exception.IncludesErrorType;
 import at.frosty.restaurant.common.exception.NotFoundException;
-import at.frosty.restaurant.common.exception.ServiceUnavailableException;
-import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
