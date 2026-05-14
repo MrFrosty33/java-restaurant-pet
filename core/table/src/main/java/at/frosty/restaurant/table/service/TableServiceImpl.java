@@ -59,7 +59,7 @@ public class TableServiceImpl implements TableService {
     @Transactional
     public TableDto updateTable(UUID id, UpdateTableDto updateTableDto) {
         Table entity = getTableEntity(id);
-        if (updateTableDto.getNumber() != entity.getNumber()) {
+        if (updateTableDto.getNumber() != null && !updateTableDto.getNumber().equals(entity.getNumber())) {
             validateTableNumberNotOccupied(updateTableDto.getNumber(), "updateTable()");
         }
 

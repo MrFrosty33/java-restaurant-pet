@@ -9,9 +9,9 @@ import lombok.Data;
 public class UpdateTableDto {
     @Positive
     @Max(1000)
-    private int number;
+    private Integer number;
 
     @Positive
     @Max(30)
-    private int capacity;
+    private Integer capacity;
 }
