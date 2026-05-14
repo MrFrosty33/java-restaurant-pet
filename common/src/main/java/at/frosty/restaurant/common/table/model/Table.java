@@ -19,7 +19,7 @@ public class Table {
     private UUID id;
 
     @Positive
-    @Column
+    @Column(unique = true)
     private int number;
 
     @Positive

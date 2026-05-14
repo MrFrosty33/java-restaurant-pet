@@ -26,9 +26,9 @@ public class Dish {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column
+    @Column(unique = true, nullable = false)
     private String name;
-    @Column
+    @Column(nullable = false)
     private BigDecimal price;
     @Column
     @Enumerated(EnumType.STRING)

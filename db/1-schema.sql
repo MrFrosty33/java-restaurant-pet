@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS dish_allergens (
 
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    username VARCHAR(150) NOT NULL,
+    username VARCHAR(150) UNIQUE NOT NULL,
     password VARCHAR(150) NOT NULL
 );
 
