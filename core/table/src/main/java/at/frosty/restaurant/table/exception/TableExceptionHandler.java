@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -119,6 +120,19 @@ public class TableExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleMethodArgumentTypeMismatch(HttpMessageNotReadableException e, HttpServletRequest request) {
+        writeLog(e);
+        return ErrorMessage.builder()
+                .message(e.getMessage())
+                .errorType(ErrorType.VALIDATION_ERROR)
+                .status(HttpStatus.BAD_REQUEST)
+                .apiPath(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
     // jakarta Exceptions
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -142,6 +156,7 @@ public class TableExceptionHandler {
         else if (ex instanceof ConstraintViolationException) errorType = ErrorType.VALIDATION_ERROR;
         else if (ex instanceof MethodArgumentNotValidException) errorType = ErrorType.VALIDATION_ERROR;
         else if (ex instanceof MethodArgumentTypeMismatchException) errorType = ErrorType.VALIDATION_ERROR;
+        else if (ex instanceof HttpMessageNotReadableException) errorType = ErrorType.VALIDATION_ERROR;
         else errorType = ErrorType.INTERNAL_ERROR;
 
         log.warn("{}: caught {} with errorType={}. message={}", className,
