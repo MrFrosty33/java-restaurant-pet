@@ -20,7 +20,7 @@ public class FeignAuthConfig {
     @Bean
     public RequestInterceptor basicAuthRequestInterceptor() {
         return requestTemplate -> {
-            log.info("{}: found serviceAuthCredentials: {}", className, serviceAuthCredentials);
+            log.info("{}: found serviceAuthCredentials with username={}", className, serviceAuthCredentials.getUsername());
             String encoded = Base64.getEncoder()
                     .encodeToString(serviceAuthCredentials.getCredentials().getBytes(StandardCharsets.UTF_8));
 
