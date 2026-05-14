@@ -15,6 +15,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 
@@ -105,6 +106,19 @@ public class TableExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
+        writeLog(e);
+        return ErrorMessage.builder()
+                .message(e.getMessage())
+                .errorType(ErrorType.VALIDATION_ERROR)
+                .status(HttpStatus.BAD_REQUEST)
+                .apiPath(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
     // jakarta Exceptions
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -127,6 +141,7 @@ public class TableExceptionHandler {
         else if (ex instanceof MissingServletRequestParameterException) errorType = ErrorType.VALIDATION_ERROR;
         else if (ex instanceof ConstraintViolationException) errorType = ErrorType.VALIDATION_ERROR;
         else if (ex instanceof MethodArgumentNotValidException) errorType = ErrorType.VALIDATION_ERROR;
+        else if (ex instanceof MethodArgumentTypeMismatchException) errorType = ErrorType.VALIDATION_ERROR;
         else errorType = ErrorType.INTERNAL_ERROR;
 
         log.warn("{}: caught {} with errorType={}. message={}", className,
