@@ -21,6 +21,8 @@ logging:
     at.frosty.restaurant: TRACE
     #org.springframework.security: DEBUG
 
+#todo подумать над эндпоинтами в дальнейшем, в других конфигах.
+# гпт ругается на httptrace в проде
 management:
   endpoints:
     web:
