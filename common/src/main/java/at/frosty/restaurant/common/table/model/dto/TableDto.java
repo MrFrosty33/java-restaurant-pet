@@ -2,9 +2,11 @@ package at.frosty.restaurant.common.table.model.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Data;
 
 import java.util.UUID;
 
+@Data
 public class TableDto {
     private UUID id;
 

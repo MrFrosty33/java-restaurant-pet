@@ -2,8 +2,10 @@ package at.frosty.restaurant.common.exception;
 
 public enum ErrorType {
     DISH_NOT_FOUND,
+    TABLE_NOT_FOUND,
     DISH_DEACTIVATED,
     DISH_ALREADY_EXISTS,
+    TABLE_ALREADY_EXISTS,
     DISH_ALREADY_ACTIVATED,
     DISH_ALREADY_DEACTIVATED,
     UNAUTHORIZED,
